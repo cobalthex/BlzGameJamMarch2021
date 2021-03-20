@@ -223,6 +223,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 751923691828484371, guid: 33ffbb2107166a14b891b8d80223abd8, type: 3}
+      propertyPath: m_MinMoveDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5054729587240167934, guid: 33ffbb2107166a14b891b8d80223abd8, type: 3}
       propertyPath: m_Name
       value: Player
@@ -281,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7856155237517969160, guid: 33ffbb2107166a14b891b8d80223abd8, type: 3}
       propertyPath: JumpStrength
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33ffbb2107166a14b891b8d80223abd8, type: 3}
