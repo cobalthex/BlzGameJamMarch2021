@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float TurnSpeed = 500;
-    public float MoveSpeed = 10;
-    public float JumpSeconds = 0.1f;
-    public float JumpStrength = 30;
+    public float TurnSpeed = 300;
+    public float MoveSpeed = 5;
+    public float JumpStrength = 2;
     public bool InvertLookUp = false;
 
-    float jumpEndTime = 0;
-    bool wasGrounded = true;
+    private float yaw = 0;
+    private float pitch = 0;
+    private float roll = 0;
 
-    float yaw = 0;
-    float pitch = 0;
-    float roll = 0;
+    private Vector3 jumpVector;
 
-    CharacterController characterController;
+    private CharacterController characterController;
 
     void Start()
     {
@@ -26,6 +24,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        bool groundedPlayer = characterController.isGrounded;
+        if (groundedPlayer && jumpVector.y < 0)
+        {
+            jumpVector.y = 0f;
+        }
+
         // rotate camera
         {
             var turnSpeed = TurnSpeed * Time.deltaTime;
@@ -41,30 +45,20 @@ public class PlayerController : MonoBehaviour
         var move = new Vector3();
 
         // basic movement
-        if (characterController.isGrounded)
+        move += (transform.forward * Input.GetAxis("Vertical")
+            + transform.right * Input.GetAxis("Horizontal"))
+            * (MoveSpeed * Time.deltaTime);
+
+        // jump
+        if (Input.GetButtonDown("Jump") && groundedPlayer)
         {
-            move += (transform.forward * Input.GetAxis("Vertical")
-                + transform.right * Input.GetAxis("Horizontal"))
-                * (MoveSpeed * Time.deltaTime);
-
-            if (Input.GetButtonDown("Jump"))
-                jumpEndTime = Time.time + JumpSeconds;
+            jumpVector.y += Mathf.Sqrt(JumpStrength * -1.0f * Physics.gravity.y);
         }
-        wasGrounded = characterController.isGrounded;
-
-        if (Time.time < jumpEndTime)
-            move += transform.up * Mathf.Max(0, Input.GetAxis("Jump"))
-                 * (JumpStrength * Time.deltaTime);
-
-        // todo: handle velocity, character controller seems to be kinda stupid
 
         // gravity
-        move += Physics.gravity * Time.deltaTime;
+        jumpVector.y += Physics.gravity.y * Time.deltaTime;
 
+        move += jumpVector * Time.deltaTime;
         characterController.Move(move);
     }
-
-    // void OnGUI()
-    // {
-    // }
 }
