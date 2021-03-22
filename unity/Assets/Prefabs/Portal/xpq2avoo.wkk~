@@ -1,0 +1,122 @@
+using UnityEngine;
+using UnityEditor;
+
+public class Portal : MonoBehaviour
+{
+    public Portal LinkedPortal;
+    public int MaxUseCount = 1;
+
+    public Vector3 Forward => transform.up;
+    public Vector3 Up => -transform.right;
+
+    int useCount = 0;
+
+    Camera portalCamera;
+    Renderer viewthrough;
+    RenderTexture viewthroughRt;
+
+    Transform viewCamera;
+
+    Transform back;
+    Transform front;
+
+    void Start()
+    {
+        portalCamera = GetComponentInChildren<Camera>();
+        viewthrough = GetComponent<Renderer>();
+        back = transform.Find("back");
+        front = transform.Find("front");
+
+        viewthroughRt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.DefaultHDR);
+        // viewthroughRt.Create(); // created on-demand
+
+        viewthrough.material.mainTexture = viewthroughRt;
+        portalCamera.targetTexture = viewthroughRt;
+
+        if (LinkedPortal == this)
+        {
+            // todo: make this work (mirror)
+            viewthrough.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
+        }
+
+        // todo: if portal is self-portaling (mirror), flip texture on horizontal access
+
+        viewCamera = Camera.main.transform;
+    }
+
+    void LateUpdate()
+    {
+        if (LinkedPortal == null)
+            return; // clear target?
+
+        var lookPosition = GetTargetRelativePosition(viewCamera.position);
+        var lookRotation = GetTargetRelativeRotation(viewCamera.rotation);
+
+        portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
+    }
+
+    void OnDestroy()
+    {
+        viewthroughRt.Release();
+        Destroy(viewthroughRt);
+    }
+
+    void OnTriggerEnter(Collider obj)
+    {
+        if (LinkedPortal == null || (MaxUseCount > 0 && useCount > MaxUseCount))
+            return;
+
+        // todo: needs to teleport when origin passes thru
+
+        var relPos = front.position - obj.transform.position;
+
+        var targetPos = LinkedPortal.front.position + relPos + (LinkedPortal.front.forward * 2);
+        var targetRot = GetTargetRelativeRotation(obj.transform.rotation);
+
+        obj.transform.SetPositionAndRotation(targetPos, targetRot);
+        
+        ++useCount;
+        Debug.Log(useCount, this);
+    }
+
+    //todo: these don't need to be static
+
+    Vector3 GetTargetRelativePosition(Vector3 position)
+    {
+        return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
+
+        // sort of works (todo: get working)
+        //var dist = Vector3.Distance(position, transform.position);
+        //var reject = position - Vector3.Project(position, Forward);
+        //return (LinkedPortal.transform.position - (LinkedPortal.Forward * dist) + reject);
+    }
+
+    Quaternion GetTargetRelativeRotation(Quaternion rotation)
+    {
+        // todo: should be able to calculate front/back from viewthrough.transform
+
+        var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
+        return LinkedPortal.front.transform.rotation * sourceRelative;
+    }
+}
+
+[CustomEditor(typeof(Portal))]
+class PortalLinkage : Editor
+{
+    void OnSceneGUI()
+    {
+        Portal portal = target as Portal;
+
+        if (portal?.LinkedPortal != null)
+        {
+            Handles.DrawLine(portal.transform.position,
+                             portal.LinkedPortal.transform.position);
+
+            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.right * 2, 3);
+            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.forward * 2, 8);
+            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.up * 2, 13);
+
+            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2, 4);
+        }
+    }
+}

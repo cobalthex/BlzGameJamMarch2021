@@ -1,33 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float TurnSpeed = 300;
-    public float MoveSpeed = 5;
-    public float JumpStrength = 2;
+    public float TurnSpeed = 500;
+    public float MoveSpeed = 5f;
+    public float JumpSeconds = 0.1f;
+    public float JumpStrength = 30;
     public bool InvertLookUp = false;
 
-    private float yaw = 0;
-    private float pitch = 0;
-    private float roll = 0;
+    float yaw;
+    float pitch;
+    float roll;
+
+    float jumpEndTime = 0;
 
     private Vector3 jumpVector;
 
-    private CharacterController characterController;
+    new Rigidbody rigidbody;
+    new Camera camera;
 
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        rigidbody = GetComponent<Rigidbody>();
+        camera = GetComponentInChildren<Camera>();
     }
+
+    bool isGrounded;
 
     void Update()
     {
-        bool groundedPlayer = characterController.isGrounded;
-        if (groundedPlayer && jumpVector.y < 0)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            jumpVector.y = 0f;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+            return;
         }
 
         // rotate camera
@@ -37,28 +45,67 @@ public class PlayerController : MonoBehaviour
             yaw += Input.GetAxis("Mouse Y") * turnSpeed * (InvertLookUp ? 1 : -1);
             pitch += Input.GetAxis("Mouse X") * turnSpeed;
 
+            var newTilt = 0;
+            if (Input.GetKey(KeyCode.Q))
+                newTilt = -1;
+            if (Input.GetKey(KeyCode.E))
+                newTilt = 1;
+            if (newTilt != 0)
+            {
+                roll = Mathf.Clamp(roll + (newTilt * Time.deltaTime * TurnSpeed), -30, 30);
+                // todo: broken
+                camera.transform.Rotate(Vector3.forward, roll, Space.Self);
+            }
+
             yaw = Mathf.Clamp(yaw, -90, 90); // yaw
 
-            transform.rotation = Quaternion.Euler(yaw, pitch, roll);
+            camera.transform.localRotation = Quaternion.Euler(yaw, 0, roll);
+            transform.rotation = Quaternion.AngleAxis(pitch, transform.up);
         }
 
         var move = new Vector3();
 
-        // basic movement
-        move += (transform.forward * Input.GetAxis("Vertical")
-            + transform.right * Input.GetAxis("Horizontal"))
-            * (MoveSpeed * Time.deltaTime);
+        // not very reliable
+        // should probably place collider at feet and test if colliding
+        Physics.Raycast(new Ray(transform.position, Physics.gravity.normalized), out var hit);
+        isGrounded = hit.distance <= 0.001f;
 
-        // jump
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        // basic movement
+        move += (Vector3.forward * Input.GetAxis("Vertical"));
+        move += (Vector3.right * Input.GetAxis("Horizontal"));
+        move.Normalize();
+        move *= MoveSpeed * (isGrounded ? 1 : 0.1f);
+
+        if (isGrounded)
         {
-            jumpVector.y += Mathf.Sqrt(JumpStrength * -1.0f * Physics.gravity.y);
+            if (Input.GetButtonDown("Jump"))
+                jumpEndTime = Time.time + JumpSeconds;
         }
 
-        // gravity
-        jumpVector.y += Physics.gravity.y * Time.deltaTime;
+#if DEBUG
+        if (Input.GetKeyDown(KeyCode.G))
+            jumpEndTime = Time.time + JumpSeconds;
+#endif
 
-        move += jumpVector * Time.deltaTime;
-        characterController.Move(move);
+        if (Time.time < jumpEndTime)
+        {
+            move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
+        }
+
+        // todo: handle velocity, character controller seems to be kinda stupid
+
+        // use MovePosition?
+        rigidbody.AddRelativeForce(move);
+
+    }
+
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    isGrounded = Mathf.Abs(Vector3.Dot(rigidbody.velocity, Physics.gravity)) < 0.001f;
+    //}
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 100, 30), $"Grounded: {isGrounded}");
     }
 }

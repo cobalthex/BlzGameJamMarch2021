@@ -1,0 +1,66 @@
+Shader "Portal Viewthrough"
+{
+    //show values to edit in inspector
+    Properties 
+    {
+        _Color ("Tint", Color) = (1, 1, 1, 1)
+        _MainTex ("Texture", 2D) = "white" {}
+    }
+
+    SubShader
+    {
+        //the material is completely non-transparent and is rendered at the same time as the other opaque geometry
+        Tags
+        { 
+            "RenderType" = "Opaque" 
+            "Queue" = "Geometry"
+        }
+
+        Pass
+        {
+            CGPROGRAM
+
+            //include useful shader functions
+            #include "UnityCG.cginc"
+
+            //define vertex and fragment shader
+            #pragma vertex VertexFn
+            #pragma fragment FragmentFn
+
+            //texture and transforms of the texture
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+
+            fixed4 _Color;
+
+            struct VertexOutput
+            {
+                float4 position : SV_POSITION;
+                float4 screenPosition : TEXCOORD0;
+            };
+
+            //the vertex shader
+            v2f VertexFn(float4 vertex : POSITION)
+            {
+                v2f o;
+                //convert the vertex positions from object space to clip space so they can be rendered
+                o.position = UnityObjectToClipPos(vertex);
+                o.screenPosition = ComputeScreenPos(o.position);
+                return o;
+            }
+
+            //the fragment shader
+            fixed4 FragmentFn(v2f input) : SV_TARGET
+            {
+                float2 textureCoordinate = input.screenPosition.xy / input.screenPosition.w;
+
+                fixed4 col = tex2D(_MainTex, textureCoordinate);
+                col *= _Color;
+                
+                return col;
+            }
+
+            ENDCG
+        }
+    }
+}
