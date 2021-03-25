@@ -2,14 +2,21 @@
 
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class Portal : MonoBehaviour
 {
+    public enum EnteringBackBehavior
+    {
+        Passthru,
+        Block,
+        Teleport,
+    }
+
     public Portal LinkedPortal;
     public int MaxUseCount = 1;
 
-    public Vector3 Forward => transform.up;
-    public Vector3 Up => -transform.right;
+    public EnteringBackBehavior EnteringFromBackBehavior;
 
     int useCount = 0;
 
@@ -22,6 +29,14 @@ public class Portal : MonoBehaviour
     Transform back;
     Transform front;
     Vector4 portalPlane;
+
+    public Vector3 Forward => front.forward;
+    public Vector3 Up => front.up;
+
+    //public Vector3 Forward => transform.up;
+    //public Vector3 Up => -transform.right;
+
+    public bool IsMirror => this == LinkedPortal;
 
     void Start()
     {
@@ -36,9 +51,9 @@ public class Portal : MonoBehaviour
         viewthrough.material.mainTexture = viewthroughRt;
         portalCamera.targetTexture = viewthroughRt;
 
-        if (LinkedPortal == this)
+        if (IsMirror)
         {
-            // todo: make this work (mirror)
+            // todo: make this work
             viewthrough.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
         }
 
@@ -75,32 +90,83 @@ public class Portal : MonoBehaviour
         Destroy(viewthroughRt);
     }
 
+    void Teleport(Rigidbody body)
+    {
+        var relVelocity = front.InverseTransformDirection(body.velocity);
+        body.velocity = LinkedPortal.back.TransformDirection(relVelocity);
+
+        var pos = GetTargetRelativePosition(body.transform.position);
+        var rot = GetTargetRelativeRotation(body.transform.rotation);
+        body.transform.SetPositionAndRotation(pos, rot);
+
+        ++useCount;
+    }
+
+    HashSet<Collider> ignored = new HashSet<Collider>();
+
     void OnTriggerEnter(Collider collider)
+    {
+        var velocity = collider.attachedRigidbody.velocity;
+        var entranceDirection = Vector3.Dot(velocity, front.forward);
+
+        var distToPortal = Vector3.Dot(collider.transform.position - transform.position, front.forward); // prevent just-teleported items from being caught
+
+        // did the collider enter the back side?
+        if (distToPortal < 0 && entranceDirection > 0)
+        {
+            switch (EnteringFromBackBehavior)
+            {
+                case EnteringBackBehavior.Passthru:
+                case EnteringBackBehavior.Block:
+                    ignored.Add(collider);
+                    break;
+
+                case EnteringBackBehavior.Teleport:
+                    break;
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider collider)
     {
         if (LinkedPortal == null || (MaxUseCount > 0 && useCount > MaxUseCount))
             return;
 
-        // todo: needs to teleport when origin passes thru
+        if (ignored.Contains(collider))
+        {
+            if (EnteringFromBackBehavior == EnteringBackBehavior.Block)
+            {
+                const float pushbackSpeed = 1;
 
-        var colliderRigidbody = collider.GetComponent<Rigidbody>();
+                var entranceDirection = Vector3.Dot(collider.attachedRigidbody.velocity, front.forward);
 
-        var relVelocity = -front.InverseTransformDirection(colliderRigidbody.velocity);
-        colliderRigidbody.velocity = LinkedPortal.front.TransformDirection(relVelocity);
+                collider.attachedRigidbody.velocity += ((entranceDirection + pushbackSpeed) * back.forward);
+                collider.attachedRigidbody.angularVelocity = Vector3.zero; // ?
+            }
 
-        var relPoint = front.InverseTransformPoint(collider.transform.position);
-        collider.transform.position = LinkedPortal.front.TransformPoint(relPoint) + colliderRigidbody.velocity.normalized;
+            return;
+        }
 
-        ++useCount;
-        Debug.Log(useCount, this);
+        // wait until the center crosses the threshold
+        var distToPortal = Vector3.Dot(collider.transform.position - transform.position, front.forward);
+        if (distToPortal > 0)
+            return;
+
+        Teleport(collider.attachedRigidbody);
     }
 
-    //todo: these don't need to be static
+    void OnTriggerExit(Collider collider)
+    {
+        ignored.Remove(collider);
+    }
 
     Vector3 GetTargetRelativePosition(Vector3 position)
     {
+        // todo: this needs to work with mirrors
+
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
 
-        // sort of works (todo: get working)
+        // sort of works (todo: would be nice to get working)
         //var dist = Vector3.Distance(position, transform.position);
         //var reject = position - Vector3.Project(position, Forward);
         //return (LinkedPortal.transform.position - (LinkedPortal.Forward * dist) + reject);
@@ -108,8 +174,6 @@ public class Portal : MonoBehaviour
 
     Quaternion GetTargetRelativeRotation(Quaternion rotation)
     {
-        // todo: should be able to calculate front/back from viewthrough.transform
-
         var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
         return LinkedPortal.front.transform.rotation * sourceRelative;
     }
@@ -131,7 +195,8 @@ class PortalLinkage : Editor
             //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.forward * 2, 8);
             //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.up * 2, 13);
 
-            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2, 4);
+            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2f, 4);
+            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Up * 1.5f, 8);
         }
     }
 }

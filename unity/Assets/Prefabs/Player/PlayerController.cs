@@ -1,23 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float TurnSpeed = 500;
-    public float MoveSpeed = 5f;
+    public float LookSpeed = 150f;
+    public float MoveSpeed = 8f;
     public float JumpSeconds = 0.1f;
     public float JumpStrength = 30;
     public bool InvertLookUp = false;
 
-    float yaw;
-    float pitch;
-    float roll;
-
     float jumpEndTime = 0;
-
-    private Vector3 jumpVector;
 
     new Rigidbody rigidbody;
     new Camera camera;
@@ -26,41 +18,75 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         camera = GetComponentInChildren<Camera>();
+
+        camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
     }
 
     bool isGrounded;
 
     void Update()
     {
+#if DEBUG
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
             return;
         }
+#endif
 
-        // rotate camera
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            var turnSpeed = TurnSpeed * Time.deltaTime;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
 
-            yaw += Input.GetAxis("Mouse Y") * turnSpeed * (InvertLookUp ? 1 : -1);
-            pitch += Input.GetAxis("Mouse X") * turnSpeed;
+        if (Cursor.lockState != CursorLockMode.None)
+        {
+            var lookSpeed = LookSpeed * Time.deltaTime;
 
-            var newTilt = 0;
-            if (Input.GetKey(KeyCode.Q))
-                newTilt = -1;
-            if (Input.GetKey(KeyCode.E))
-                newTilt = 1;
-            if (newTilt != 0)
+            var q = camera.transform.localRotation; // transform.localEulerAngles are absoluted so calc manually
+
+            //var yaw = Mathf.Asin(-2.0f * (q.x * q.z - q.w * q.y)) * Mathf.Rad2Deg;
+            var pitch = Mathf.Atan2(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z) * Mathf.Rad2Deg;
+            var roll = Mathf.Atan2(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z) * Mathf.Rad2Deg;
+
+            // horizontal rotation
             {
-                roll = Mathf.Clamp(roll + (newTilt * Time.deltaTime * TurnSpeed), -30, 30);
-                // todo: broken
-                camera.transform.Rotate(Vector3.forward, roll, Space.Self);
+                transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * lookSpeed, Space.World);
             }
 
-            yaw = Mathf.Clamp(yaw, -90, 90); // yaw
+            // vertical rotation
+            {
+                /* the hard way */
+                // // quaternion rotations are always unsigned
+                // var oldPitch = Quaternion.Angle(camera.transform.localRotation, Quaternion.AngleAxis(0, Vector3.right));
+                // // there is probably a smarter way to do this
+                // var dot = Quaternion.Dot(camera.transform.localRotation, Quaternion.AngleAxis(90, Vector3.right));
+                // dot = (dot * 2) - 1; // since only using -90->90, convert 0-1 to -1-1
+                // oldPitch *= Mathf.Sign(dot);
 
-            camera.transform.localRotation = Quaternion.Euler(yaw, 0, roll);
-            transform.rotation = Quaternion.AngleAxis(pitch, transform.up);
+                var delta = Input.GetAxis("Mouse Y") * lookSpeed * (InvertLookUp ? 1 : -1);
+                var newPitch = Mathf.Clamp(pitch + delta, -89, 89);
+                camera.transform.Rotate(Vector3.right, newPitch - pitch, Space.Self);
+
+                //camera.transform.localRotation *= 
+            }
+
+
+            // tilt
+            {
+                // todo: automatically re-center
+                var delta = Input.GetAxis("Tilt") * lookSpeed * (InvertLookUp ? 1 : -1);
+
+                if (delta == 0)
+                    delta = -roll + Mathf.Round(Mathf.Lerp(roll, 0, 0.25f) * 10) / 10;
+
+                var newRoll = Mathf.Clamp(roll + delta, -20, 20);
+                camera.transform.Rotate(Vector3.forward, newRoll - roll, Space.Self);
+            }
         }
 
         var move = new Vector3();
@@ -81,6 +107,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
                 jumpEndTime = Time.time + JumpSeconds;
         }
+        // fake ground friction? (vs lower air resistance)?
 
 #if DEBUG
         if (Input.GetKeyDown(KeyCode.G))
@@ -92,8 +119,6 @@ public class PlayerController : MonoBehaviour
             move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
         }
 
-        // todo: handle velocity, character controller seems to be kinda stupid
-
         // use MovePosition?
         rigidbody.AddRelativeForce(move);
 
@@ -104,8 +129,10 @@ public class PlayerController : MonoBehaviour
     //    isGrounded = Mathf.Abs(Vector3.Dot(rigidbody.velocity, Physics.gravity)) < 0.001f;
     //}
 
+#if DEBUG
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 100, 30), $"Grounded: {isGrounded}");
+        GUI.Label(new Rect(10, 10, 200, 20), $"Grounded: {isGrounded}");
     }
+#endif
 }

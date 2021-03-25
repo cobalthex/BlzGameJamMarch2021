@@ -119,8 +119,8 @@ GameObject:
   - component: {fileID: 7168573390967752757}
   m_Layer: 0
   m_Name: Portal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_TagString: Portal
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -218,6 +218,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LinkedPortal: {fileID: 0}
   MaxUseCount: 0
+  EnteringFromRearBehavior: 0
+  LineRenderer: {fileID: 3761138211966999779, guid: bf17c41c173f247489c0945cd2ec6077, type: 3}
 --- !u!1 &7247573108311870922
 GameObject:
   m_ObjectHideFlags: 0
