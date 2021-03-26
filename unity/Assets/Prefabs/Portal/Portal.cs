@@ -13,6 +13,7 @@ public class Portal : MonoBehaviour
         Teleport,
     }
 
+    //public Transform Exit;
     public Portal LinkedPortal;
     public int MaxUseCount = 1;
 
@@ -37,6 +38,7 @@ public class Portal : MonoBehaviour
     //public Vector3 Up => -transform.right;
 
     public bool IsMirror => this == LinkedPortal;
+    //public bool IsMirror => transform == Exit;
 
     void Start()
     {
@@ -75,6 +77,7 @@ public class Portal : MonoBehaviour
 
         portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
 
+        //var portalPlane = new Plane(Exit)
         var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * LinkedPortal.portalPlane;
 
         // Set portal camera projection matrix to clip walls between target portal and portal camera
@@ -186,17 +189,17 @@ class PortalLinkage : Editor
     {
         Portal portal = target as Portal;
 
-        if (portal?.LinkedPortal != null)
-        {
-            Handles.DrawLine(portal.transform.position,
-                             portal.LinkedPortal.transform.position);
+        //if (portal?.LinkedPortal != null)
+        //{
+        //    Handles.DrawLine(portal.transform.position,
+        //                     portal.LinkedPortal.transform.position);
 
-            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.right * 2, 3);
-            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.forward * 2, 8);
-            //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.up * 2, 13);
+        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.right * 2, 3);
+        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.forward * 2, 8);
+        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.up * 2, 13);
 
-            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2f, 4);
-            Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Up * 1.5f, 8);
-        }
+        //    Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2f, 4);
+        //    Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Up * 1.5f, 8);
+        //}
     }
 }
