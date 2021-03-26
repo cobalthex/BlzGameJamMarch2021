@@ -22,6 +22,7 @@ Shader "Portal Viewthrough"
 
             #include "UnityCG.cginc"
         
+            // #pragma surface surf Standard fullforwardshadows
             #pragma vertex VertexFn
             #pragma fragment FragmentFn
 
