@@ -1,0 +1,6 @@
+Dungeon Skeletons V 1.3
+-Model and animations set to Humanoid.
+
+-Scale:
+Scale has been locally changed to 0.6 to match the Unity standard character scale.
+If you were using the original scale and this update affected your project, just set the scale (both model and animations) back to 1 in the file properties.
