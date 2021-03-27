@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class Portal : MonoBehaviour
 {
+    const int MaxRecursion = 5;
+
     public enum EnteringBackBehavior
     {
         Passthru,
@@ -13,9 +15,8 @@ public class Portal : MonoBehaviour
         Teleport,
     }
 
-    //public Transform Exit;
     public Portal LinkedPortal;
-    public int MaxUseCount = 1;
+    public int MaxUseCount = int.MaxValue;
 
     public EnteringBackBehavior EnteringFromBackBehavior;
 
@@ -31,18 +32,14 @@ public class Portal : MonoBehaviour
     Transform front;
     Vector4 portalPlane;
 
-    public Vector3 Forward => front.forward;
-    public Vector3 Up => front.up;
-
     //public Vector3 Forward => transform.up;
     //public Vector3 Up => -transform.right;
 
-    public bool IsMirror => this == LinkedPortal;
-    //public bool IsMirror => transform == Exit;
+    bool IsMirror => this == LinkedPortal;
 
     void Start()
     {
-        portalCamera = GetComponentInChildren<Camera>();
+        portalCamera = transform.Find("Viewfinder").GetComponent<Camera>(); // unity sucks
         viewthrough = GetComponent<Renderer>();
         back = transform.Find("back");
         front = transform.Find("front");
@@ -52,6 +49,7 @@ public class Portal : MonoBehaviour
 
         viewthrough.material.mainTexture = viewthroughRt;
         portalCamera.targetTexture = viewthroughRt;
+        portalCamera.enabled = false;
 
         if (IsMirror)
         {
@@ -67,30 +65,63 @@ public class Portal : MonoBehaviour
         portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
     }
 
+    void SetCameraClipMatrix()
+    {
+        var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * LinkedPortal.portalPlane;
+        var obliqueProjectionMatrix = viewCamera.CalculateObliqueMatrix(clipMatrix);
+        portalCamera.projectionMatrix = obliqueProjectionMatrix;
+    }
+
     void LateUpdate()
     {
+
+        // creates a view frustrum that is clipping right at the portal's plane
+
+    }
+
+    static bool VisibleFromCamera(Renderer renderer, Camera camera)
+    {
+        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
+        return GeometryUtility.TestPlanesAABB(frustumPlanes, renderer.bounds);
+    }
+
+    void OnRenderObject()
+    {
+        if (!VisibleFromCamera(viewthrough, viewCamera))
+            return;
+
         if (LinkedPortal == null)
-            return; // clear target?
+        {
+            viewthroughRt.DiscardContents();
+            return;
+        }
 
         var lookPosition = GetTargetRelativePosition(viewCamera.transform.position);
         var lookRotation = GetTargetRelativeRotation(viewCamera.transform.rotation);
 
         portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
 
-        //var portalPlane = new Plane(Exit)
-        var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * LinkedPortal.portalPlane;
-
-        // Set portal camera projection matrix to clip walls between target portal and portal camera
-        // Inherits main camera near/far clip plane and FOV settings
-
-        var obliqueProjectionMatrix = viewCamera.CalculateObliqueMatrix(clipMatrix);
-        portalCamera.projectionMatrix = obliqueProjectionMatrix;
+        SetCameraClipMatrix();
+        portalCamera.Render();
     }
 
     void OnDestroy()
     {
         viewthroughRt.Release();
         Destroy(viewthroughRt);
+    }
+
+    Vector3 GetTargetRelativePosition(Vector3 position)
+    {
+        // todo: this needs to work with mirrors
+
+        return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
+    }
+
+    Quaternion GetTargetRelativeRotation(Quaternion rotation)
+    {
+        var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
+        return LinkedPortal.front.rotation * sourceRelative;
     }
 
     void Teleport(Rigidbody body)
@@ -132,7 +163,7 @@ public class Portal : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
-        if (LinkedPortal == null || (MaxUseCount > 0 && useCount > MaxUseCount))
+        if (LinkedPortal == null || (MaxUseCount < int.MaxValue && useCount > MaxUseCount))
             return;
 
         if (ignored.Contains(collider))
@@ -163,43 +194,18 @@ public class Portal : MonoBehaviour
         ignored.Remove(collider);
     }
 
-    Vector3 GetTargetRelativePosition(Vector3 position)
+    void OnDrawGizmos()
     {
-        // todo: this needs to work with mirrors
-
-        return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
-
-        // sort of works (todo: would be nice to get working)
-        //var dist = Vector3.Distance(position, transform.position);
-        //var reject = position - Vector3.Project(position, Forward);
-        //return (LinkedPortal.transform.position - (LinkedPortal.Forward * dist) + reject);
-    }
-
-    Quaternion GetTargetRelativeRotation(Quaternion rotation)
-    {
-        var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
-        return LinkedPortal.front.transform.rotation * sourceRelative;
-    }
-}
-
-[CustomEditor(typeof(Portal))]
-class PortalLinkage : Editor
-{
-    void OnSceneGUI()
-    {
-        Portal portal = target as Portal;
-
-        //if (portal?.LinkedPortal != null)
-        //{
-        //    Handles.DrawLine(portal.transform.position,
-        //                     portal.LinkedPortal.transform.position);
-
-        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.right * 2, 3);
-        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.forward * 2, 8);
-        //    //Handles.DrawLine(portal.transform.position, portal.transform.position + portal.transform.up * 2, 13);
-
-        //    Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Forward * 2f, 4);
-        //    Handles.DrawLine(portal.transform.position, portal.transform.position + portal.Up * 1.5f, 8);
-        //}
+        if (LinkedPortal == this)
+        {
+            Gizmos.color = new Color(1, 0.75f, 0.3f); // different colors per instance ID?
+            Gizmos.DrawWireSphere(transform.position, 0.5f);
+        }
+        else if (LinkedPortal != null)
+        {
+            Gizmos.color = new Color(0.35f, 0.3f, 1); // different colors per instance ID?
+            Gizmos.DrawWireSphere(transform.position, 0.5f);
+            Gizmos.DrawLine(transform.position, LinkedPortal.transform.position);
+        }
     }
 }

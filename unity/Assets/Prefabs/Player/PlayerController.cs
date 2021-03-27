@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
 #if DEBUG
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 200, 20), $"Grounded: {isGrounded}");
+        //GUI.Label(new Rect(10, 10, 200, 20), $"Grounded: {isGrounded}");
     }
 #endif
 }
