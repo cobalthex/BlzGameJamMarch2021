@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 484270}
   - component: {fileID: 3380466}
   - component: {fileID: 2384546}
+  - component: {fileID: 721572964691146396}
   m_Layer: 0
   m_Name: SO_DeskPreset_05
   m_TagString: Untagged
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &721572964691146396
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131802}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.1090803, y: 2.7015128, z: 1.7982178}
+  m_Center: {x: 0.00000047683716, y: 1.3507564, z: 0}

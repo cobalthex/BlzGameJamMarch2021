@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 436428}
   - component: {fileID: 3355728}
   - component: {fileID: 2382594}
+  - component: {fileID: 7968025203622784425}
   m_Layer: 0
   m_Name: SO_JanitorCart
   m_TagString: Untagged
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7968025203622784425
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113634}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.001175, y: 2.6611605, z: 1.520668}
+  m_Center: {x: 0, y: 1.3305802, z: 0}
