@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 457722}
   - component: {fileID: 3386186}
   - component: {fileID: 2321166}
+  - component: {fileID: 8397522222773389953}
   m_Layer: 0
   m_Name: SO_Cupboard
   m_TagString: Untagged
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8397522222773389953
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187378}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.7135379, y: 3.0182164, z: 0.9055445}
+  m_Center: {x: -0.00000023841855, y: 1.5091082, z: 0.00000053644175}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 462224}
   - component: {fileID: 3347306}
   - component: {fileID: 2341170}
+  - component: {fileID: 2945674386676723947}
   m_Layer: 0
   m_Name: SO_Coffeetable_01
   m_TagString: Untagged
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2945674386676723947
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199632}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2196826, y: 0.82738817, z: 2.241289}
+  m_Center: {x: 0, y: 0.41369408, z: 0}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 416598}
   - component: {fileID: 3324368}
   - component: {fileID: 2349342}
+  - component: {fileID: 6652900131900068963}
   m_Layer: 0
   m_Name: SO_Wall_Glass
   m_TagString: Untagged
@@ -82,6 +83,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6652900131900068963
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105514}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 4.6851273, z: 0.109749794}
+  m_Center: {x: -2.5, y: 2.0719004, z: 0}
 --- !u!1 &177230
 GameObject:
   m_ObjectHideFlags: 0

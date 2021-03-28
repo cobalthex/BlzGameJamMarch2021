@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookSpeed: 150
-  MoveSpeed: 8
+  MoveSpeed: 1.2
   JumpSeconds: 0.1
   JumpStrength: 30
   InvertLookUp: 0
@@ -158,7 +158,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5054729587240167934}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1ef545fdfb63ff24fb4f9909ca51128a, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -174,7 +174,7 @@ Rigidbody:
   m_GameObject: {fileID: 5054729587240167934}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0.5
+  m_Drag: 2
   m_AngularDrag: 2
   m_UseGravity: 1
   m_IsKinematic: 0
