@@ -1,0 +1,37 @@
+using System;
+using UnityEngine;
+
+public struct PickEventArgs
+{
+    public RaycastHit Hit { get; }
+
+    public PickEventArgs(RaycastHit hit)
+    {
+        Hit = hit;
+    }
+}
+
+public class Picker : MonoBehaviour
+{
+    public float MaxDistanceMeters = 0.5f;
+
+    public event EventHandler<PickEventArgs> NewPick;
+
+    Collider lastHit = null;
+
+    // Update is called once per frame
+    void Update()
+    {
+        var transform = Camera.main.transform;
+        if (Physics.Raycast(transform.position, transform.forward, out var pick, MaxDistanceMeters))
+        {
+            if (pick.collider != lastHit)
+            {
+                lastHit = pick.collider;
+                NewPick.Invoke(this, new PickEventArgs)
+            }
+        }
+        else
+            lastHit = null;
+    }
+}

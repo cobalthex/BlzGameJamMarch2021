@@ -1,0 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class StateAnimator : MonoBehaviour
+{
+    /// <summary>
+    /// The value of this state, clamped from 0 to 1
+    /// </summary>
+    [Range(0, 1)]
+    public float DesiredValue = 0;
+
+    float ActualValue = 0;
+
+    /// <summary>
+    /// How quickly to change the value, per second
+    /// </summary>
+    /// <remarks>Come up with a better name?</remarks>
+    public float Speed = 1;
+
+    public Transform RotationOrigin; // only the local position is used
+
+    /// <summary>
+    /// The orientation this transform should be in when <see cref="Value"/> is 0.
+    /// This can be at a position other than 0,0,0 - 0°
+    /// </summary>
+    public Transform OffState;
+    /// <summary>
+    /// The orientation this transform should be in when <see cref="Value"/> is 1.
+    /// </summary>
+    public Transform OnState;
+
+    float actualValue;
+
+    Vector3 offsetPosition;
+    Quaternion offsetRotation = Quaternion.identity;
+
+    Vector3 rotationOrigin;
+
+    void Start()
+    {
+        offsetPosition = transform.localPosition;
+        offsetRotation = transform.localRotation;
+
+        RotationOrigin ??= Instantiate(transform);
+    }
+
+    void Update()
+    {
+        if (Application.isPlaying)
+        {
+            var dist = DesiredValue - actualValue;
+            if (dist == 0)
+                return;
+
+            actualValue += Mathf.Sign(dist) * Mathf.Min(Mathf.Abs(dist), Time.deltaTime * Speed);
+        }
+        else
+            actualValue = DesiredValue;
+
+        var rotation = Quaternion.Slerp(OffState.localRotation, OnState.localRotation, actualValue);
+        var originOffset = -(rotation * RotationOrigin.localPosition) + RotationOrigin.localPosition;
+        
+        transform.localPosition = offsetPosition - Vector3.Lerp(OffState.localPosition, OnState.localPosition, actualValue) + originOffset;
+        transform.localRotation = offsetRotation * rotation;
+    }
+    void OnDrawGizmos()
+    {
+        // "this" is the first node, so there should always be at least one node
+
+        var rotation = Quaternion.Slerp(OffState.localRotation, OnState.localRotation, actualValue);
+        var originOffset = -(rotation * RotationOrigin.localPosition) + RotationOrigin.localPosition;
+
+        Gizmos.color = new Color(0.45f, 0.3f, 1.0f);
+        Gizmos.DrawSphere(transform.position + RotationOrigin.localPosition - originOffset, 0.1f);
+    }
+}

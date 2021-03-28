@@ -14,10 +14,15 @@ public class PlayerController : MonoBehaviour
     new Rigidbody rigidbody;
     new Camera camera;
 
+    Gun gun;
+    Picker picker;
+
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         camera = GetComponentInChildren<Camera>();
+        gun = GetComponent<Gun>();
+        picker = GetComponent<Picker>();
 
         camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
     }
@@ -42,6 +47,8 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
+
+        #region Movement
 
         if (Cursor.lockState != CursorLockMode.None)
         {
@@ -122,6 +129,22 @@ public class PlayerController : MonoBehaviour
         // use MovePosition?
         rigidbody.AddRelativeForce(move);
 
+        #endregion
+
+        #region Interaction
+
+        if (Input.GetButton("Fire1"))
+        {
+            Switch switchObj;
+            if ((switchObj = picker?.Pick?.GetComponent<Switch>()) != null)
+            {
+                switchObj.Flip();
+            }
+            else
+                gun?.Fire(camera.transform);
+        }
+
+        #endregion
     }
 
     //void OnCollisionEnter(Collision collision)

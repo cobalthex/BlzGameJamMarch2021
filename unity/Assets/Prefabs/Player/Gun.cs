@@ -14,15 +14,15 @@ public class Gun : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Fire(Transform from)
     {
-        if (Input.GetButton("Fire1") && Time.time >= nextShotTimeSec)
+        if (Time.time >= nextShotTimeSec)
         {
             nextShotTimeSec = Time.time + ShotDelaySec;
 
-            var shot = Instantiate(Projectile, transform.position + transform.forward * 0.1f, Quaternion.identity);
+            var shot = Instantiate(Projectile, from.position + from.forward * 0.1f, Quaternion.identity);
             shot.velocity = transform.forward * ShotSpeed;
         }
     }
+
 }

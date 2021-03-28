@@ -1,0 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+public class EditorMenus
+{
+    // Start is called before the first frame update
+
+    [MenuItem("Tools/Find Far Objects")]
+    public static void FindFarObjects()
+    {
+        List<GameObject> farObjs = new List<GameObject>();
+        var allObjs = GameObject.FindObjectsOfType<GameObject>();
+        for (var i = 0; i < allObjs.Length; i++)
+        {
+            if ((Mathf.Abs(allObjs[i].transform.position.x) > 1000) ||
+                (Mathf.Abs(allObjs[i].transform.position.y) > 500) ||
+                (Mathf.Abs(allObjs[i].transform.position.z) > 1000)
+            )
+            {
+                farObjs.Add(allObjs[i]);
+            }
+        }
+
+        if (farObjs.Count > 0)
+        {
+            for (var i = 0; i < farObjs.Count; i++)
+            {
+                Debug.LogError($"Found object {farObjs[i].name} at location {farObjs[i].transform.position}");
+            }
+        }
+        else
+        {
+            Debug.Log("No Far objects");
+        }
+    }
+
+    [MenuItem("Tools/Reset Camera to Player")]
+    public static void ResetCameraToPlayer()
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        var camera = player.GetComponentInChildren<Camera>();
+
+        camera.enabled = false;
+        camera.enabled = true;
+    }
+
+    [MenuItem("Tools/Drop object")]
+    public static void DropObject()
+    {
+        Vector3 position;
+
+        var renderer = Selection.activeGameObject.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            ; //todo
+        }
+        else
+        {
+            Selection.activeTransform.position
+        }
+    }
+}
