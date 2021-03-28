@@ -37,6 +37,7 @@ public class StateAnimator : MonoBehaviour
         
         transform.localPosition = Vector3.Lerp(OffState.localPosition, OnState.localPosition, State.Value) + originOffset;
         transform.localRotation = rotation;
+        // transform.localScale = Vector3.Lerp(OffState.localScale, OnState.localScale, State.Value); * originScale ?
     }
     void OnDrawGizmos()
     {
