@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Picker : MonoBehaviour
+{
+    public float MaxDistanceMeters = 0.5f;
+
+    public RaycastHit Pick => pick;
+    private RaycastHit pick;
+
+    // Update is called once per frame
+    void Update()
+    {
+        var transform = Camera.main.transform;
+
+        Physics.Raycast(transform.position, transform.forward, out Pick, MaxDistanceMeters);
+    }
+}

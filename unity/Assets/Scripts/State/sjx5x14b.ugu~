@@ -1,0 +1,35 @@
+using UnityEngine;
+
+public class LinkedState : MonoBehaviour
+{
+    public AnalogState Source;
+    public float SourceConditionValue;
+
+    public float DelaySec;
+    public AnalogState[] Targets;
+    
+    public bool DisableAfterUse = true;
+
+    float activationTime;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (activationTime > 0)
+        {
+            if (Time.time >= activationTime)
+            {
+                foreach (var target in Targets)
+                    target.
+
+                enabled = !DisableAfterUse;
+                activationTime = 0;
+            }
+            return;
+        }
+
+        var value = Source.Value;
+        if (value == SourceConditionValue)
+            activationTime = Time.time + DelaySec;
+    }
+}

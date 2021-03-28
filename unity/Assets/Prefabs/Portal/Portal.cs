@@ -16,7 +16,7 @@ public class Portal : MonoBehaviour
     }
 
     public Portal LinkedPortal;
-    public int MaxUseCount = int.MaxValue;
+    public int MaxUseCount = -1;
 
     public EnteringBackBehavior EnteringFromBackBehavior;
 
@@ -37,12 +37,17 @@ public class Portal : MonoBehaviour
 
     bool IsMirror => this == LinkedPortal;
 
-    void Start()
+    void Awake()
     {
         portalCamera = transform.Find("Viewfinder").GetComponent<Camera>(); // unity sucks
         viewthrough = GetComponent<Renderer>();
         back = transform.Find("back");
         front = transform.Find("front");
+    }
+
+    void Start()
+    {
+        GetComponent<Camera>().enabled = true;
 
         viewthroughRt = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.DefaultHDR);
         // viewthroughRt.Create(); // created on-demand
@@ -163,7 +168,7 @@ public class Portal : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
-        if (LinkedPortal == null || (MaxUseCount < int.MaxValue && useCount > MaxUseCount))
+        if (LinkedPortal == null || (MaxUseCount > 0 && useCount > MaxUseCount))
             return;
 
         if (ignored.Contains(collider))
@@ -194,18 +199,24 @@ public class Portal : MonoBehaviour
         ignored.Remove(collider);
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         if (LinkedPortal == this)
         {
-            Gizmos.color = new Color(1, 0.75f, 0.3f); // different colors per instance ID?
-            Gizmos.DrawWireSphere(transform.position, 0.5f);
+            Handles.color = new Color(1, 0.75f, 0.3f); // different colors per instance ID?
+            Handles.DrawSolidDisc(transform.position, transform.forward, 0.5f);
         }
         else if (LinkedPortal != null)
         {
-            Gizmos.color = new Color(0.35f, 0.3f, 1); // different colors per instance ID?
-            Gizmos.DrawWireSphere(transform.position, 0.5f);
-            Gizmos.DrawLine(transform.position, LinkedPortal.transform.position);
+            Handles.color = new Color(0.35f, 0.3f, 1); // different colors per instance ID?
+            Handles.DrawSolidDisc(transform.position, transform.forward, 0.5f);
+            Handles.DrawAAPolyLine(2, transform.position, LinkedPortal.transform.position);
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Handles.color = Color.blue;
+        Handles.DrawAAPolyLine(6, transform.position, transform.position - transform.right); // up
     }
 }

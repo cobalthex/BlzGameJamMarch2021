@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum SwitchState
+{
+    Off,
+    On
+}
+
+public class Switch : MonoBehaviour
+{
+    /// <summary>
+    /// Should this switch keep its state or reset it to the default
+    /// </summary>
+    public bool Sticky = false;
+
+    public SwitchState DefaultState = SwitchState.Off;
+
+    public SwitchState State
+    {
+        get => _state;
+        set
+        {
+            if (_state == value || Time.time < nextActivationTime)
+                return;
+
+            _state = value;
+            Debug.Log($"Flipped {this}");
+
+            if (animations == null)
+                return;
+
+            float duration = 0;
+            float start = State == SwitchState.Off ? -1 : 1;
+            foreach (var animation in animations)
+            {
+                var clip = animation[animation.clip.name];
+                clip.normalizedSpeed *= start;
+                duration = Mathf.Max(duration, clip.length);
+                animation.Play(PlayMode.StopAll);
+            }
+            nextActivationTime = Time.time + duration;
+        }
+    }
+    private SwitchState _state;
+
+    Animation[] animations;
+    float nextActivationTime;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        State = DefaultState;
+        animations = GetComponentsInChildren<Animation>();
+
+        float value = State == SwitchState.Off ? 0 : 1;
+        foreach (var animation in animations)
+        {
+            animation[animation.clip.name].normalizedSpeed = -1;
+            animation[animation.clip.name].normalizedTime = value;
+        }
+    }
+
+    void Update()
+    {
+        //if (Time.time >= nextActivationTime)
+        //{
+        //    //Debug.Log("Resetting");
+        //    State = DefaultState;
+        //}
+    }
+
+    public void Toggle()
+    {
+        State ^= SwitchState.On;
+    }
+
+    public override string ToString()
+    {
+        return base.ToString() + $" ({State})";
+    }
+}
