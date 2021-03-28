@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class Portal : MonoBehaviour
 {
-    const int MaxRecursion = 5;
+    const int MaxRecursion = 5; // this renders the scene this many times, so this can get expensive
 
     public enum EnteringBackBehavior
     {
@@ -84,16 +84,36 @@ public class Portal : MonoBehaviour
 
     }
 
-    static bool VisibleFromCamera(Renderer renderer, Camera camera)
+    static bool InCamerasFrustum(Renderer renderer, Camera camera)
     {
         Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
         return GeometryUtility.TestPlanesAABB(frustumPlanes, renderer.bounds);
     }
 
+    readonly Vector3[] renderPositions = new Vector3[MaxRecursion];
+    readonly Quaternion[] renderRotations = new Quaternion[MaxRecursion];
+    bool occluded = false;
+
     void OnRenderObject()
     {
-        if (!VisibleFromCamera(viewthrough, viewCamera))
+        if (!InCamerasFrustum(viewthrough, viewCamera)) // this should be done automatically
+        {
+#if UNITY_EDITOR
+            occluded = true;
+#endif
             return;
+        }
+
+        var dot = Vector3.Dot(viewCamera.transform.position - front.position, front.forward);
+        if (dot < 0)
+        {
+#if UNITY_EDITOR
+            occluded = true;
+#endif
+            return;
+        }
+
+        occluded = false;
 
         if (LinkedPortal == null)
         {
@@ -106,8 +126,15 @@ public class Portal : MonoBehaviour
 
         portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
 
+        var localToWorldMatrix = viewCamera.transform.localToWorldMatrix;
+
+        viewthrough.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+        LinkedPortal.viewthrough.material.SetInt("displayMask", 0);
+
         SetCameraClipMatrix();
         portalCamera.Render();
+
+        viewthrough.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
     }
 
     void OnDestroy()
@@ -199,24 +226,29 @@ public class Portal : MonoBehaviour
         ignored.Remove(collider);
     }
 
-    void OnDrawGizmosSelected()
-    {
-        if (LinkedPortal == this)
-        {
-            Handles.color = new Color(1, 0.75f, 0.3f); // different colors per instance ID?
-            Handles.DrawSolidDisc(transform.position, transform.forward, 0.5f);
-        }
-        else if (LinkedPortal != null)
-        {
-            Handles.color = new Color(0.35f, 0.3f, 1); // different colors per instance ID?
-            Handles.DrawSolidDisc(transform.position, transform.forward, 0.5f);
-            Handles.DrawAAPolyLine(2, transform.position, LinkedPortal.transform.position);
-        }
-    }
-
     void OnDrawGizmos()
     {
-        Handles.color = Color.blue;
-        Handles.DrawAAPolyLine(6, transform.position, transform.position - transform.right); // up
+#if UNITY_EDITOR
+        if (occluded)
+            return;
+#endif
+
+        front ??= transform.Find("front");
+        Handles_DrawArrow(6, front.position, front.position - front.right, front.forward, Color.green); // up
+
+        Handles_DrawArrow(3, front.position, front.position + front.forward, -front.right, Color.blue); // forward
+    }
+
+    void Handles_DrawArrow(float width, Vector3 tail, Vector3 nose, Vector3 wingPlaneNormal, Color color)
+    {
+        Handles.color = color;
+        Handles.DrawAAPolyLine(width, tail, nose);
+
+        var wingLength = (tail - nose).magnitude;
+        var wingTangent = ((tail - nose) / wingLength) / 3;
+
+        var left = nose + Quaternion.AngleAxis(-30, wingPlaneNormal) * wingTangent;
+        var right = nose + Quaternion.AngleAxis(30, wingPlaneNormal) * wingTangent;
+        Handles.DrawAAPolyLine(width, left, nose, right);
     }
 }

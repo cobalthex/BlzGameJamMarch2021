@@ -16,6 +16,11 @@ public class Path : MonoBehaviour
         Color.RGBToHSV(Color.green, out endColor.x, out endColor.y, out endColor.z);
     }
 
+    void Awake()
+    {
+        nodes = GetComponentsInChildren<Transform>();
+    }
+
     void Update()
     {
         nodes = GetComponentsInChildren<Transform>();

@@ -3,11 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float LookSpeed = 150f;
-    public float MoveSpeed = 8f;
+    public float LookSpeed = 150;
+    public float MoveSpeed = 1;
+    public float MaxMovementSpeed = 8;
     public float JumpSeconds = 0.1f;
-    public float JumpStrength = 30;
+    public float JumpStrength = 1;
     public bool InvertLookUp = false;
+
 
     float jumpEndTime = 0;
 
@@ -25,6 +27,10 @@ public class PlayerController : MonoBehaviour
         picker = GetComponent<Picker>();
 
         camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
+
+        // ensure the active camera
+        camera.enabled = false;
+        camera.enabled = true;
     }
 
     bool isGrounded;
@@ -107,7 +113,11 @@ public class PlayerController : MonoBehaviour
         move += (Vector3.forward * Input.GetAxis("Vertical"));
         move += (Vector3.right * Input.GetAxis("Horizontal"));
         move.Normalize();
-        move *= MoveSpeed * (isGrounded ? 1 : 0.1f);
+
+        var forwardSpeed = Vector3.Dot(transform.rotation * move, rigidbody.velocity);
+        var moveSpeed = Mathf.Lerp(MoveSpeed, 0, forwardSpeed / MaxMovementSpeed);
+
+        move *= moveSpeed * (isGrounded ? 1 : 0.1f);
 
         if (isGrounded)
         {
@@ -126,8 +136,7 @@ public class PlayerController : MonoBehaviour
             move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
         }
 
-        // use MovePosition?
-        rigidbody.AddRelativeForce(move);
+        rigidbody.AddRelativeForce(move, ForceMode.Impulse);
 
         #endregion
 
