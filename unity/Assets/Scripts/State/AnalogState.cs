@@ -27,7 +27,7 @@ public class AnalogState : MonoBehaviour
             if (dist == 0)
                 return;
 
-            Value += Mathf.Sign(dist) * Mathf.Min(Mathf.Abs(dist), Time.deltaTime * Speed);
+            Value += Mathf.Sign(dist) * Mathf.Min(Mathf.Abs(dist), Time.deltaTime * Speed); // use coroutine?
         }
         else
             Value = DesiredValue;

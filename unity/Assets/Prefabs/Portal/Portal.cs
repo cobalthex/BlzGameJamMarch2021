@@ -1,8 +1,10 @@
 // based off https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-1-basic-portal-rendering-7c3d957f656c
 
+//#define RECURSIVE_PORTALS
+
 using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class Portal : MonoBehaviour
 {
@@ -32,6 +34,9 @@ public class Portal : MonoBehaviour
     Transform front;
     Vector4 portalPlane;
 
+    static int frame;
+    static int portalsRendered;
+
     //public Vector3 Forward => transform.up;
     //public Vector3 Up => -transform.right;
 
@@ -54,7 +59,11 @@ public class Portal : MonoBehaviour
 
         viewthrough.material.mainTexture = viewthroughRt;
         portalCamera.targetTexture = viewthroughRt;
+#if RECURSIVE_PORTALS
         portalCamera.enabled = false;
+#else
+        portalCamera.enabled = true;
+#endif
 
         if (IsMirror)
         {
@@ -77,13 +86,6 @@ public class Portal : MonoBehaviour
         portalCamera.projectionMatrix = obliqueProjectionMatrix;
     }
 
-    void LateUpdate()
-    {
-
-        // creates a view frustrum that is clipping right at the portal's plane
-
-    }
-
     static bool InCamerasFrustum(Renderer renderer, Camera camera)
     {
         Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
@@ -94,47 +96,83 @@ public class Portal : MonoBehaviour
     readonly Quaternion[] renderRotations = new Quaternion[MaxRecursion];
     bool occluded = false;
 
+
+#if RECURSIVE_PORTALS
+
     void OnRenderObject()
     {
-        if (!InCamerasFrustum(viewthrough, viewCamera)) // this should be done automatically
-        {
-#if UNITY_EDITOR
-            occluded = true;
-#endif
-            return;
-        }
-
-        var dot = Vector3.Dot(viewCamera.transform.position - front.position, front.forward);
-        if (dot < 0)
-        {
-#if UNITY_EDITOR
-            occluded = true;
-#endif
-            return;
-        }
-
-        occluded = false;
-
         if (LinkedPortal == null)
         {
             viewthroughRt.DiscardContents();
             return;
         }
 
-        var lookPosition = GetTargetRelativePosition(viewCamera.transform.position);
-        var lookRotation = GetTargetRelativeRotation(viewCamera.transform.rotation);
+        if (portalsRendered > 2)
+        {
+            Debug.Log("Trying to render too many portals");
+            return;
+        }
 
-        portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
+        var dot = Vector3.Dot(viewCamera.transform.position - front.position, front.forward);
+        if (dot < 0)
+        {
+            occluded = true;
+            return;
+        }
+
+        if (!InCamerasFrustum(viewthrough, viewCamera)) // this should be done automatically
+        {
+            occluded = true;
+            return;
+        }
+
+        // create a collider with layer Portal to block line-of-sight
+        {
+            var toView = (viewCamera.transform.position - front.position);
+            var toViewLength = toView.magnitude;
+            if (Physics.Raycast(new Ray(front.position, toView / toViewLength), out var hit, toViewLength, ~LayerMask.NameToLayer("Portal")))
+            {
+                occluded = true;
+                return;
+            }
+        }
+
+        if (frame != Time.frameCount)
+        {
+            frame = Time.frameCount;
+            portalsRendered = 0;
+        }
+
+        ++portalsRendered;
+        occluded = false;
 
         var localToWorldMatrix = viewCamera.transform.localToWorldMatrix;
 
         viewthrough.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
         LinkedPortal.viewthrough.material.SetInt("displayMask", 0);
 
+        SetCameraView();
         SetCameraClipMatrix();
         portalCamera.Render();
+        // todo: recursive rendering
 
         viewthrough.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+    }
+
+#else
+
+    void LateUpdate()
+    {
+        SetCameraView();
+    }
+
+#endif
+
+    void SetCameraView()
+    {
+        var lookPosition = GetTargetRelativePosition(viewCamera.transform.position);
+        var lookRotation = GetTargetRelativeRotation(viewCamera.transform.rotation);
+        portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
     }
 
     void OnDestroy()
@@ -152,6 +190,7 @@ public class Portal : MonoBehaviour
 
     Quaternion GetTargetRelativeRotation(Quaternion rotation)
     {
+        // todo: this does not work if entering the portal backwards (always places user forward)
         var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
         return LinkedPortal.front.rotation * sourceRelative;
     }
@@ -195,7 +234,7 @@ public class Portal : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
-        if (LinkedPortal == null || (MaxUseCount > 0 && useCount > MaxUseCount))
+        if (LinkedPortal == null || (MaxUseCount >= 0 && useCount > MaxUseCount))
             return;
 
         if (ignored.Contains(collider))
@@ -226,29 +265,19 @@ public class Portal : MonoBehaviour
         ignored.Remove(collider);
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
-#if UNITY_EDITOR
-        if (occluded)
-            return;
-#endif
-
-        front ??= transform.Find("front");
-        Handles_DrawArrow(6, front.position, front.position - front.right, front.forward, Color.green); // up
-
-        Handles_DrawArrow(3, front.position, front.position + front.forward, -front.right, Color.blue); // forward
+        Handles.color = new Color(0.25f, 0, 1f);
+        Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
     }
 
-    void Handles_DrawArrow(float width, Vector3 tail, Vector3 nose, Vector3 wingPlaneNormal, Color color)
+    void OnDrawGizmos()
     {
-        Handles.color = color;
-        Handles.DrawAAPolyLine(width, tail, nose);
+        if (occluded)
+            return;
 
-        var wingLength = (tail - nose).magnitude;
-        var wingTangent = ((tail - nose) / wingLength) / 3;
-
-        var left = nose + Quaternion.AngleAxis(-30, wingPlaneNormal) * wingTangent;
-        var right = nose + Quaternion.AngleAxis(30, wingPlaneNormal) * wingTangent;
-        Handles.DrawAAPolyLine(width, left, nose, right);
+        front ??= transform.Find("front");
+        EditorDrawUtils.DrawArrow(6, front.position, front.position - front.right, front.forward, Color.green); // up
+        EditorDrawUtils.DrawArrow(3, front.position, front.position + front.forward, -front.right, Color.blue); // forward
     }
 }

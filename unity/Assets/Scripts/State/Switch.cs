@@ -19,7 +19,7 @@ public class Switch : MonoBehaviour
     /// (This delay is after animations finish).
     /// Use a negative value for never
     /// </summary>
-    public float ResetDelaySec;
+    public float ResetDelaySec = -1;
 
     public bool DisableAfterUse;
     public bool CanOnlyUseInDefaultState;

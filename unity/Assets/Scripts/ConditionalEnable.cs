@@ -14,7 +14,7 @@ public class ConditionalEnable : MonoBehaviour
     /// <summary>
     /// Targets to enable or disable based on whether or not the condition is satisfied
     /// </summary>
-    public MonoBehaviour[] Targets;
+    public Behaviour[] Targets;
 
     void Update()
     {

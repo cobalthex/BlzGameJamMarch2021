@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 131770}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 3384662}
   - component: {fileID: 2364338}
   - component: {fileID: 1922198536644193898}
+  - component: {fileID: -7189628312166706576}
   m_Layer: 0
   m_Name: SO_CeilingFan
   m_TagString: Untagged
@@ -211,6 +212,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DesiredValue: 1
   Speed: 1
+--- !u!114 &-7189628312166706576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641a71c298a9c384e91b30793af4078d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  State: {fileID: 1922198536644193898}
 --- !u!1 &1177982912577856256
 GameObject:
   m_ObjectHideFlags: 0

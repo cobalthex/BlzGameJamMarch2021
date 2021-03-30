@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
         #region Interaction
 
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             Switch switchObj;
             if ((switchObj = picker?.Pick?.GetComponent<Switch>()) != null)
@@ -167,4 +167,11 @@ public class PlayerController : MonoBehaviour
         //GUI.Label(new Rect(10, 10, 200, 20), $"Grounded: {isGrounded}");
     }
 #endif
+
+
+    void OnDrawGizmos()
+    {
+        if (camera != null)
+            EditorDrawUtils.DrawArrow(3, camera.transform.position, camera.transform.position + camera.transform.forward, camera.transform.up, Color.yellow);
+    }
 }

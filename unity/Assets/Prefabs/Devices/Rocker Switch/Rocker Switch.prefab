@@ -63,8 +63,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LinkedState: {fileID: 2209964908585959435}
-  ResetDelaySec: 0
+  ResetDelaySec: -1
   DisableAfterUse: 0
+  CanOnlyUseInDefaultState: 0
   DefaultState: 1
 --- !u!114 &2209964908585959435
 MonoBehaviour:

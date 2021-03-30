@@ -30,38 +30,103 @@ public class EditorMenus
         camera.enabled = true;
     }
 
-    [MenuItem("Tools/Drop object _g")]
+    static void DropObject(GameObject obj, Vector3 down)
+    {
+        Vector3 position;
+
+        Collider collider;
+        Renderer renderer;
+        if ((collider = obj.GetComponent<Collider>()) != null)
+        {
+            var projection = Vector3.Project(collider.bounds.extents, down);
+            position = collider.bounds.center - projection;
+        }
+        else if ((renderer = obj.GetComponent<Renderer>()) != null)
+        {
+            var projection = Vector3.Project(renderer.bounds.extents, down);
+            position = renderer.bounds.center - projection;
+        }
+        else
+            position = obj.transform.position;
+
+        // note: this will only detect objects with a collider
+        if (Physics.Raycast(position, down, out var hit))
+        {
+            obj.transform.position -= (position - hit.point);
+        }
+        else
+        {
+            Debug.LogWarning("No collider to drop onto");
+        }
+    }
+
+    [MenuItem("Tools/Teleport Object/Drop _g")]
     public static void DropObject()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var down = Physics.gravity.normalized;
-        Vector3 position;
+        DropObject(Selection.activeGameObject, down);
+    }
 
-        Collider collider;
-        Renderer renderer;
-        if ((collider = Selection.activeGameObject.GetComponent<Collider>()) != null)
-        {
-            var projection = Vector3.Project(collider.bounds.extents, down);
-            position = collider.bounds.center - projection;
-        }
-        else if ((renderer = Selection.activeGameObject.GetComponent<Renderer>()) != null)
-        {
-            var projection = Vector3.Project(renderer.bounds.extents, down);
-            position = renderer.bounds.center - projection;
-        }
-        else
-            position = Selection.activeTransform.position;
+    [MenuItem("Tools/Teleport Object/+X")]
+    public static void DropObjectPX()
+    {
+        if (Selection.activeGameObject == null)
+            return;
 
-        // note: this will only detect objects with a collider
-        if (Physics.Raycast(position, down, out var hit))
-        {
-            Selection.activeTransform.position -= (position - hit.point);
-        }
-        else
-        {
-            Debug.LogWarning("No collider to drop onto");
-        }
+        var up = Vector3.right;
+        DropObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/-X")]
+    public static void DropObjectNX()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var up = Vector3.left;
+        DropObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/+Y")]
+    public static void DropObjectPY()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var up = Vector3.up;
+        DropObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/-Y")]
+    public static void DropObjectNY()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var up = Vector3.down;
+        DropObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/+Z")]
+    public static void DropObjectPZ()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var up = Vector3.forward;
+        DropObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/-Z")]
+    public static void DropObjectNZ()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var up = Vector3.back;
+        DropObject(Selection.activeGameObject, up);
     }
 }
