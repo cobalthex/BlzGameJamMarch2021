@@ -10,6 +10,8 @@ public class Picker : MonoBehaviour
 
     public Collider Pick { get; private set; } = null;
 
+    public Texture Crosshair;
+
     // Update is called once per frame
     void Update()
     {
@@ -29,5 +31,16 @@ public class Picker : MonoBehaviour
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), $"{Pick}");
+
+        if (Crosshair != null)
+        {
+            var dest = new Rect(
+                (Screen.width - Crosshair.width) / 2,
+                (Screen.height - Crosshair.height) / 2,
+                Crosshair.width,
+                Crosshair.height
+            );
+            GUI.DrawTexture(dest, Crosshair, ScaleMode.ScaleToFit, true);
+        }
     }
 }

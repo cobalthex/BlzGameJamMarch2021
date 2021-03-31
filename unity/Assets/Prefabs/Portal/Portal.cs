@@ -183,13 +183,25 @@ public class Portal : MonoBehaviour
 
     Vector3 GetTargetRelativePosition(Vector3 position)
     {
-        // todo: this needs to work with mirrors
+        if (IsMirror)
+        {
+            return front.position + Vector3.Reflect(position - front.position, front.forward);
+        }
 
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
     }
 
     Quaternion GetTargetRelativeRotation(Quaternion rotation)
     {
+        if (IsMirror)
+        {
+            var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
+            return q;
+            //rotation.y *= -1;
+            //rotation.z *= -1;
+            //return rotation;
+        }
+
         // todo: this does not work if entering the portal backwards (always places user forward)
         var sourceRelative = Quaternion.Inverse(back.transform.rotation) * rotation;
         return LinkedPortal.front.rotation * sourceRelative;

@@ -35,6 +35,7 @@ public class Switch : MonoBehaviour
                 return;
 
             _state = value;
+            BroadcastMessage("OnSwitchStateChanged", this, SendMessageOptions.DontRequireReceiver);
 
             if (DisableAfterUse)
                 enabled = false;

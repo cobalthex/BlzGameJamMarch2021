@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Portal
   - Switch
+  - Pickup
   layers:
   - Default
   - TransparentFX

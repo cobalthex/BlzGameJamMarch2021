@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     Gun gun;
     Picker picker;
 
+    public Hand LeftHamd;
+    public Hand RightHand;
+
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -117,7 +120,7 @@ public class PlayerController : MonoBehaviour
         var forwardSpeed = Vector3.Dot(transform.rotation * move, rigidbody.velocity);
         var moveSpeed = Mathf.Lerp(MoveSpeed, 0, forwardSpeed / MaxMovementSpeed);
 
-        move *= moveSpeed * (isGrounded ? 1 : 0.1f);
+        move *= moveSpeed * (isGrounded ? 1 : 0.4f);
 
         if (isGrounded)
         {
@@ -143,17 +146,32 @@ public class PlayerController : MonoBehaviour
         #region Interaction
 
         if (Input.GetButtonDown("Fire1"))
+            Interact(LeftHamd);
+
+        if (Input.GetButtonDown("Fire2"))
+            Interact(RightHand);
+
+        #endregion
+    }
+
+    void Interact(Hand hand)
+    {
+        if (picker?.Pick != null)
         {
             Switch switchObj;
-            if ((switchObj = picker?.Pick?.GetComponent<Switch>()) != null)
+            Equippable equippable;
+            if ((switchObj = picker.Pick.GetComponent<Switch>()) != null)
             {
                 switchObj.Flip();
             }
-            else
-                gun?.Fire(camera.transform);
+            else if ((equippable = picker.Pick.GetComponent<Equippable>()) != null &&
+                hand != null)
+            {
+                hand.EquippedItem = equippable;
+            }
         }
-
-        #endregion
+        else
+            hand?.TryUseEquippedItem(this);
     }
 
     //void OnCollisionEnter(Collision collision)

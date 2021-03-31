@@ -1,11 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ConditionRule
+{
+    Equal,
+    NotEqual,
+    Less,
+    Greater,
+}
+
 [ExecuteAlways]
 public class ConditionalEnable : MonoBehaviour
 {
     public AnalogState Condition;
-    public float ConditionValue; // ge, le, eq?
+    public float ConditionValue;
+    public ConditionRule ConditionRule;
 
     bool lastState;
 
@@ -21,8 +30,15 @@ public class ConditionalEnable : MonoBehaviour
         if (Condition == null || Targets == null)
             return;
 
-        // initial state?
-        var state = Condition.Value == ConditionValue;
+        var state = ConditionRule switch
+        {
+            ConditionRule.Equal     => (Condition.Value == ConditionValue),
+            ConditionRule.NotEqual  => (Condition.Value != ConditionValue),
+            ConditionRule.Less      => (Condition.Value < ConditionValue),
+            ConditionRule.Greater   => (Condition.Value > ConditionValue),
+            _ => false,
+        };
+
         if (state != lastState)
         {
             lastState = state;
