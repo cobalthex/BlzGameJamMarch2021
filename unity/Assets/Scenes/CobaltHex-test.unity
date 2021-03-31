@@ -4220,10 +4220,22 @@ PrefabInstance:
       propertyPath: Transform
       value: 
       objectReference: {fileID: 87785920}
+    - target: {fileID: 2147003990, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 528052833923018132, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
       propertyPath: LinkedPortal
       value: 
       objectReference: {fileID: 22442871}
+    - target: {fileID: 4495276622445489990, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7219242464890926505, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
+      propertyPath: DesiredValue
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7219242465102086637, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -4271,6 +4283,14 @@ PrefabInstance:
     - target: {fileID: 7219242465102086638, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
       propertyPath: m_Name
       value: SingleUseElevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 7219242465396753178, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7219242465476406720, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef966eff37e01be42a87f3559ec3814b, type: 3}
