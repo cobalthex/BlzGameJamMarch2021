@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class LinkedState : MonoBehaviour
 {
-    public AnalogState Source;
-    public float SourceConditionValue = 1; // optional?
+    public Condition Source;
 
     public float DelaySec;
     public AnalogState[] Targets;
@@ -28,8 +27,7 @@ public class LinkedState : MonoBehaviour
             return;
         }
 
-        var value = Source.Value;
-        if (value == SourceConditionValue)
+        if (Source.Test())
             activationTime = Time.time + DelaySec;
     }
 }

@@ -24,6 +24,8 @@ public class Switch : MonoBehaviour
     public bool DisableAfterUse;
     public bool CanOnlyUseInDefaultState;
 
+    public bool SetStateImmediately = false;
+
     public SwitchState DefaultState = SwitchState.Off;
 
     public SwitchState State
@@ -43,7 +45,10 @@ public class Switch : MonoBehaviour
             if (LinkedState != null)
             {
                 LinkedState.DesiredValue = (value == SwitchState.Off ? 0 : 1);
-                nextActivationTime = Time.time + LinkedState.Duration;
+                if (SetStateImmediately)
+                    LinkedState.Value = LinkedState.DesiredValue;
+                else
+                    nextActivationTime = Time.time + LinkedState.Duration;
             }
 
             if (value != DefaultState)

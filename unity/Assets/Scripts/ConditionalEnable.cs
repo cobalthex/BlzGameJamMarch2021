@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-
 public enum ConditionRule
 {
     Equal,
@@ -9,12 +7,31 @@ public enum ConditionRule
     Greater,
 }
 
+[System.Serializable]
+public struct Condition
+{
+    public AnalogState State;
+    public float Value;
+    public ConditionRule Rule;
+
+    public bool Test()
+    {
+        return Rule switch
+        {
+            ConditionRule.Equal     => (Value == State.Value),
+            ConditionRule.NotEqual  => (Value != State.Value),
+            ConditionRule.Less      => (Value < State.Value),
+            ConditionRule.Greater   => (Value > State.Value),
+            _ => false,
+        };
+    }
+}
+
+
 [ExecuteAlways]
 public class ConditionalEnable : MonoBehaviour
 {
-    public AnalogState Condition;
-    public float ConditionValue;
-    public ConditionRule ConditionRule;
+    public Condition Condition;
 
     bool lastState;
 
@@ -27,17 +44,10 @@ public class ConditionalEnable : MonoBehaviour
 
     void Update()
     {
-        if (Condition == null || Targets == null)
+        if (Condition.State == null || Targets == null)
             return;
 
-        var state = ConditionRule switch
-        {
-            ConditionRule.Equal     => (Condition.Value == ConditionValue),
-            ConditionRule.NotEqual  => (Condition.Value != ConditionValue),
-            ConditionRule.Less      => (Condition.Value < ConditionValue),
-            ConditionRule.Greater   => (Condition.Value > ConditionValue),
-            _ => false,
-        };
+        var state = Condition.Test();
 
         if (state != lastState)
         {
