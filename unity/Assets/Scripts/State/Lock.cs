@@ -11,7 +11,8 @@ public enum LockAction
 
 public class Lock : Interactable
 {
-    public Equippable[] Keys;
+    public Equippable[] AnyOfTheseKeys;
+    public bool ConsumeKey = true;
 
     public Behaviour[] Targets;
 
@@ -22,13 +23,16 @@ public class Lock : Interactable
         if (hand.EquippedItem == null)
             return false;
 
-        foreach (var key in Keys)
+        foreach (var key in AnyOfTheseKeys)
         {
             if (key == hand.EquippedItem)
             {
                 UseLock();
-                Destroy(hand.EquippedItem.gameObject); // consume key
-                hand.EquippedItem = null;
+                if (ConsumeKey)
+                {
+                    Destroy(hand.EquippedItem.gameObject); // consume key
+                    hand.EquippedItem = null;
+                }
                 return true;
             }
         }
