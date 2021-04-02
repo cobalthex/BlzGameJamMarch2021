@@ -65,18 +65,18 @@ public class Portal : MonoBehaviour
         portalCamera.enabled = true;
 #endif
 
-        if (IsMirror)
-        {
-            // todo: make this work
-            viewthrough.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
-        }
-
         // todo: if portal is self-portaling (mirror), flip texture on horizontal access
 
         viewCamera = Camera.main;
 
         var plane = new Plane(front.forward, transform.position);
         portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+    }
+
+    void OnDestroy()
+    {
+        viewthroughRt.Release();
+        Destroy(viewthroughRt);
     }
 
     void SetCameraClipMatrix()
@@ -164,6 +164,7 @@ public class Portal : MonoBehaviour
     void LateUpdate()
     {
         SetCameraView();
+        SetCameraClipMatrix();
     }
 
 #endif
@@ -175,17 +176,23 @@ public class Portal : MonoBehaviour
         portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
     }
 
-    void OnDestroy()
-    {
-        viewthroughRt.Release();
-        Destroy(viewthroughRt);
-    }
-
     Vector3 GetTargetRelativePosition(Vector3 position)
     {
         if (IsMirror)
         {
-            return front.position + Vector3.Reflect(position - front.position, front.forward);
+            return front.position - front.forward * 0.01f;
+
+            //var d = position - front.position;
+            //var dot = Vector3.Dot(d, front.right);
+
+            //return front.position - (front.forward * 0.01f) - (front.right * dot);
+
+            //return front.position + Vector3.Reflect(position - front.position, front.forward);
+
+            //var p = new Plane(front.forward, front.position);
+            //var r = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
+            //bool _hit = p.Raycast(r, out var d);
+            //return r.GetPoint(d + 0.01f);
         }
 
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
@@ -195,8 +202,16 @@ public class Portal : MonoBehaviour
     {
         if (IsMirror)
         {
-            var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
-            return q;
+            Vector3 dir = (viewCamera.transform.position - front.position).normalized;
+            Quaternion rot = Quaternion.LookRotation(dir);
+
+            rot.eulerAngles = (front.eulerAngles - rot.eulerAngles).normalized; // todo: use quat
+
+            return rot;
+
+
+            //var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
+            //return q;
             //rotation.y *= -1;
             //rotation.z *= -1;
             //return rotation;
@@ -281,6 +296,9 @@ public class Portal : MonoBehaviour
     {
         Handles.color = new Color(0.25f, 0, 1f);
         Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
+
+        var pct = portalCamera.transform;
+        EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.white);
     }
 
     void OnDrawGizmos()

@@ -158,17 +158,11 @@ public class PlayerController : MonoBehaviour
     {
         if (picker?.Pick != null)
         {
-            Switch[] switches;
-            Equippable equippable;
-            if ((switches = picker.Pick.GetComponents<Switch>()).Length > 0)
+            Interactable[] interactables;
+            if ((interactables = picker.Pick.GetComponents<Interactable>()).Length > 0)
             {
-                foreach (var sw in switches)
-                    sw.Flip();
-            }
-            else if ((equippable = picker.Pick.GetComponent<Equippable>()) != null &&
-                hand != null)
-            {
-                hand.EquippedItem = equippable;
+                foreach (var act in interactables)
+                    act.TryInteract(this, hand);
             }
         }
         else

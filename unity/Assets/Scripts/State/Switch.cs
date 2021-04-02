@@ -7,7 +7,7 @@ public enum SwitchState
 }
 
 [ExecuteAlways]
-public class Switch : MonoBehaviour
+public class Switch : Interactable
 {
     /// <summary>
     /// A state to update when this switch is triggered
@@ -75,11 +75,11 @@ public class Switch : MonoBehaviour
         }
     }
 
-    public void Flip()
+    public override bool TryInteract(PlayerController player, Hand hand)
     {
         if (!enabled ||
             (CanOnlyUseInDefaultState && State != DefaultState))
-            return;
+            return false;
 
         switch (State)
         {
@@ -90,6 +90,8 @@ public class Switch : MonoBehaviour
                 State = SwitchState.Off;
                 break;
         }
+
+        return true;
     }
 
     public override string ToString()

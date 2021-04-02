@@ -7,6 +7,7 @@ TagManager:
   - Portal
   - Switch
   - Pickup
+  - ShowInMinimap
   layers:
   - Default
   - TransparentFX
