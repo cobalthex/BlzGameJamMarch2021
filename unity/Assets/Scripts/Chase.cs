@@ -1,22 +1,29 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Chase : MonoBehaviour
 {
     public Transform target;
-    public float updateSeconds;
+    public float updateSeconds = 3;
+    public float timeToTeleport = 3;
+    public AudioClip deathNoise;
 
     private float updateCountdown;
     private NavMeshAgent agent;
+    private AudioSource audioSource;
     private bool isPartial;
+    private float timePartial;
 
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        audioSource = GetComponent<AudioSource>();
         agent.destination = target.position;
         updateCountdown = updateSeconds;
         isPartial = false;
+        timePartial = 0.0f;
     }
 
     void FixedUpdate()
@@ -30,8 +37,20 @@ public class Chase : MonoBehaviour
         {
             Debug.Log("Can now reach dest");
             isPartial = false;
+            timePartial = 0.0f;
         }
-        
+
+        if (isPartial)
+        {
+            timePartial += Time.fixedDeltaTime;
+            if (timePartial > timeToTeleport)
+            {
+                Transform[] destinations = getTeleportDestinations();
+                Transform destination = getClosestDestination(destinations, target);
+                agent.Warp(destination.position);
+                timePartial = 0.0f; // reset how long we've been unable to find a path to the player
+            }
+        }
 
         updateCountdown -= Time.fixedDeltaTime;
         if (updateCountdown <= 0)
@@ -39,5 +58,50 @@ public class Chase : MonoBehaviour
             agent.destination = target.position;
             updateCountdown = updateSeconds;
         }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Contains("Player"))
+        {
+            audioSource.Stop();
+            audioSource.clip = deathNoise;
+            audioSource.loop = false;
+            audioSource.Play();
+
+            // TODO: wire in other end of game state
+        }
+    }
+
+    Transform[] getTeleportDestinations()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("MonsterSpawn");
+        Debug.Log("Found " + objects.Length + " spawn points");
+        return Array.ConvertAll(objects, new Converter<GameObject, Transform>(gameObjectToTransform));
+    }
+
+    Transform gameObjectToTransform(GameObject gameObject)
+    {
+        return gameObject.GetComponent<Transform>();
+    }
+
+    Transform getClosestDestination(Transform[] candidates, Transform player)
+    {
+        Transform bestTarget = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = player.position;
+        foreach (Transform potentialTarget in candidates)
+        {
+            Vector3 directionToTarget = potentialTarget.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                bestTarget = potentialTarget;
+            }
+        }
+
+        Debug.Log("Best target is " + bestTarget.gameObject.name);
+        return bestTarget;
     }
 }

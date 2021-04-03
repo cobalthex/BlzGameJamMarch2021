@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    private float floorEpsilon = 0.01f;
+
     public float LookSpeed = 150;
     public float MoveSpeed = 1;
     public float MaxMovementSpeed = 8;
@@ -10,10 +12,10 @@ public class PlayerController : MonoBehaviour
     public float JumpStrength = 1;
     public bool InvertLookUp = false;
 
-
     float jumpEndTime = 0;
 
-    new Rigidbody rigidbody;
+    Transform feet;
+    Rigidbody body;
     new Camera camera;
 
     Gun gun;
@@ -24,7 +26,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        feet = transform.Find("feet");
+        body = GetComponent<Rigidbody>();
         camera = GetComponentInChildren<Camera>();
         gun = GetComponent<Gun>();
         picker = GetComponent<Picker>();
@@ -109,15 +112,16 @@ public class PlayerController : MonoBehaviour
 
         // not very reliable
         // should probably place collider at feet and test if colliding
-        Physics.Raycast(new Ray(transform.position, Physics.gravity.normalized), out var hit);
-        isGrounded = hit.distance <= 0.001f;
+        var down = Physics.gravity.normalized;
+        Physics.Raycast(new Ray(feet.position - (down * floorEpsilon), down), out var hit);
+        isGrounded = hit.distance <= floorEpsilon;
 
         // basic movement
         move += (Vector3.forward * Input.GetAxis("Vertical"));
         move += (Vector3.right * Input.GetAxis("Horizontal"));
         move.Normalize();
 
-        var forwardSpeed = Vector3.Dot(transform.rotation * move, rigidbody.velocity);
+        var forwardSpeed = Vector3.Dot(transform.rotation * move, body.velocity);
         var moveSpeed = Mathf.Lerp(MoveSpeed, 0, forwardSpeed / MaxMovementSpeed);
 
         move *= moveSpeed * (isGrounded ? 1 : 0.4f);
@@ -139,7 +143,7 @@ public class PlayerController : MonoBehaviour
             move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
         }
 
-        rigidbody.AddRelativeForce(move, ForceMode.Impulse);
+        body.AddRelativeForce(move, ForceMode.Impulse);
 
         #endregion
 
@@ -177,7 +181,8 @@ public class PlayerController : MonoBehaviour
 #if DEBUG
     void OnGUI()
     {
-        //GUI.Label(new Rect(10, 10, 200, 20), $"Grounded: {isGrounded}");
+        GUI.color = Color.blue;
+        //GUI.Label(new Rect(10, 100, 200, 20), $"Grounded: {isGrounded}");
     }
 #endif
 

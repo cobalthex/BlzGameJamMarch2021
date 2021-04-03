@@ -8,6 +8,7 @@ TagManager:
   - Switch
   - Pickup
   - ShowInMinimap
+  - MonsterSpawn
   layers:
   - Default
   - TransparentFX
@@ -19,10 +20,10 @@ TagManager:
   - Portal
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Cell A
+  - Cell B
+  - Cell C
+  - Cell D
   - 
   - 
   - 

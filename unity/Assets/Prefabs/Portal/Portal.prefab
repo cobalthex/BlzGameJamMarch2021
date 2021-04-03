@@ -92,7 +92,7 @@ Camera:
   m_Depth: -100
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 127
+    m_Bits: 15487
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LinkedPortal: {fileID: 0}
-  MaxUseCount: 2147483647
+  MaxUseCount: -1
   EnteringFromBackBehavior: 0
 --- !u!20 &700388528029685184
 Camera:

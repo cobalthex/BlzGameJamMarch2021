@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Equippable : Interactable
+public class Equippable : Interactable
 {
     public Transform RelativeTransform;
 

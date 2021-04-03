@@ -9,7 +9,7 @@ public static class EditorDrawUtils
         Handles.DrawAAPolyLine(width, tail, nose);
 
         var wingLength = (tail - nose).magnitude;
-        var wingTangent = ((tail - nose) / wingLength) / 3;
+        var wingTangent = (tail - nose) / 3;
 
         var left = nose + Quaternion.AngleAxis(-30, wingPlaneNormal) * wingTangent;
         var right = nose + Quaternion.AngleAxis(30, wingPlaneNormal) * wingTangent;
