@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Chase : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Chase : MonoBehaviour
     public float updateSeconds = 3;
     public float timeToTeleport = 3;
     public AudioClip deathNoise;
-
+ 
     private float updateCountdown;
     private NavMeshAgent agent;
     private AudioSource audioSource;
@@ -69,7 +70,9 @@ public class Chase : MonoBehaviour
             audioSource.loop = false;
             audioSource.Play();
 
-            // TODO: wire in other end of game state
+            GameObject uiObject = GameObject.FindGameObjectWithTag("UI");
+            UIController uiController = uiObject.GetComponent<UIController>();
+            uiController.BroadcastMessage("gameOver");
         }
     }
 
