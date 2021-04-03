@@ -8,6 +8,7 @@ TagManager:
   - Switch
   - Pickup
   - ShowInMinimap
+  - MonsterSpawn
   layers:
   - Default
   - TransparentFX
