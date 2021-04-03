@@ -150,7 +150,9 @@ MonoBehaviour:
   LinkedState: {fileID: 7954863172560323169}
   ResetDelaySec: 0
   DisableAfterUse: 0
-  DefaultState: 1
+  CanOnlyUseInDefaultState: 0
+  SetStateImmediately: 0
+  DefaultState: 0
 --- !u!65 &3243853983151854794
 BoxCollider:
   m_ObjectHideFlags: 0

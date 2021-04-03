@@ -163,6 +163,9 @@ public class Portal : MonoBehaviour
 
     void LateUpdate()
     {
+        if (LinkedPortal == null)
+            return;
+
         SetCameraView();
         SetCameraClipMatrix();
     }
@@ -202,19 +205,12 @@ public class Portal : MonoBehaviour
     {
         if (IsMirror)
         {
-            Vector3 dir = (viewCamera.transform.position - front.position).normalized;
-            Quaternion rot = Quaternion.LookRotation(dir);
 
-            rot.eulerAngles = (front.eulerAngles - rot.eulerAngles).normalized; // todo: use quat
-
-            return rot;
-
-
-            //var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
-            //return q;
-            //rotation.y *= -1;
-            //rotation.z *= -1;
-            //return rotation;
+            var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
+            return q;
+            rotation.y *= -1;
+            rotation.z *= -1;
+            return rotation;
         }
 
         // todo: this does not work if entering the portal backwards (always places user forward)
@@ -294,8 +290,11 @@ public class Portal : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Handles.color = new Color(0.25f, 0, 1f);
-        Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
+        if (LinkedPortal != null)
+        {
+            Handles.color = new Color(0.25f, 0, 1f);
+            Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
+        }
 
         var pct = portalCamera.transform;
         EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.white);
