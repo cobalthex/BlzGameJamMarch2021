@@ -15,12 +15,14 @@ public class Chase : MonoBehaviour
     private AudioSource audioSource;
     private bool isPartial;
     private float timePartial;
+    private Animator animator;
 
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
+        animator = GetComponentInChildren<Animator>();
         agent.destination = target.position;
         updateCountdown = updateSeconds;
         isPartial = false;
@@ -69,6 +71,8 @@ public class Chase : MonoBehaviour
             audioSource.clip = deathNoise;
             audioSource.loop = false;
             audioSource.Play();
+
+            animator.Play("Base Layer.DS_onehand_attack_A");
 
             GameObject uiObject = GameObject.FindGameObjectWithTag("UI");
             UIController uiController = uiObject.GetComponent<UIController>();
