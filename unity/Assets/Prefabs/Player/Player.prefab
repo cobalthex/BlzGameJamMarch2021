@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 835315391}
   - component: {fileID: 835315392}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right hand
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 4678638824909664930}
   - component: {fileID: 8061349693839843130}
   - component: {fileID: 87785924}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player eyes
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 15487
+    m_Bits: 15743
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -166,7 +166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4387589588511506419}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: feet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 1435470301}
   - component: {fileID: 1435470302}
   - component: {fileID: 2344415999099867197}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -217,7 +217,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5054729587240167934}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2122026078287292940}
@@ -331,7 +331,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8204648791266807227}
   - component: {fileID: 2176573284906645707}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left hand
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 3540482968118277260}
   - component: {fileID: 6962851796329467226}
   - component: {fileID: 4935212319880650658}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: body
   m_TagString: Player
   m_Icon: {fileID: 0}

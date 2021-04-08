@@ -220,6 +220,7 @@ MonoBehaviour:
   LinkedPortal: {fileID: 0}
   MaxUseCount: -1
   EnteringFromBackBehavior: 0
+  Fucker: {fileID: 0}
 --- !u!20 &700388528029685184
 Camera:
   m_ObjectHideFlags: 0
