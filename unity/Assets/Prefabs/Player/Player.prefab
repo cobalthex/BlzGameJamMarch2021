@@ -246,7 +246,7 @@ MonoBehaviour:
   JumpSeconds: 0.1
   JumpStrength: 1
   InvertLookUp: 0
-  LeftHamd: {fileID: 2176573284906645707}
+  LeftHand: {fileID: 2176573284906645707}
   RightHand: {fileID: 835315392}
 --- !u!54 &2389441188294580374
 Rigidbody:

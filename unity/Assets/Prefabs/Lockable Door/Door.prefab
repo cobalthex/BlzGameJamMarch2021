@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8347f843e44b074d94952db83668a88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Keys: []
-  Targets: []
+  AnyOfTheseKeys:
+  - {fileID: 0}
+  ConsumeKey: 1
+  Targets:
+  - {fileID: 2715639502006879988}
   UseAction: 0
 --- !u!1 &2595012837359709192
 GameObject:
@@ -54,7 +57,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2595012837359709192}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9d280627ac0de24ba4be4ed472eb5c9, type: 3}
   m_Name: 
@@ -137,6 +140,8 @@ MonoBehaviour:
   RotationOrigin: {fileID: 0}
   OffState: {fileID: 2595012838195093269}
   OnState: {fileID: 2595012837781665941}
+  UseEulerRotation: 0
+  Steps: 0
 --- !u!1001 &2089414506281840523
 PrefabInstance:
   m_ObjectHideFlags: 0
