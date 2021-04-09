@@ -60,93 +60,50 @@ public class EditorMenus
         }
     }
 
+    private static void TeleportSelectedObject(Vector3 direction)
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        TeleportObject(Selection.activeGameObject, direction);
+    }
+
     [MenuItem("Tools/Teleport Object/Drop _g")]
-    public static void TeleportObject()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var down = Physics.gravity.normalized;
-        TeleportObject(Selection.activeGameObject, down);
-    }
-
-    [MenuItem("Tools/Teleport Object/+X")]
-    public static void TeleportObjectPX()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.right;
-        TeleportObject(Selection.activeGameObject, up);
-    }
-
-    [MenuItem("Tools/Teleport Object/-X")]
-    public static void TeleportObjectNX()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.left;
-        TeleportObject(Selection.activeGameObject, up);
-    }
-
-    [MenuItem("Tools/Teleport Object/+Y")]
-    public static void TeleportObjectPY()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.up;
-        TeleportObject(Selection.activeGameObject, up);
-    }
-
-    [MenuItem("Tools/Teleport Object/-Y")]
-    public static void TeleportObjectNY()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.down;
-        TeleportObject(Selection.activeGameObject, up);
-    }
-
-    [MenuItem("Tools/Teleport Object/+Z")]
-    public static void TeleportObjectPZ()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.forward;
-        TeleportObject(Selection.activeGameObject, up);
-    }
-
-    [MenuItem("Tools/Teleport Object/-Z")]
-    public static void TeleportObjectNZ()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var up = Vector3.back;
-        TeleportObject(Selection.activeGameObject, up);
-    }
+    public static void DropObject() => TeleportSelectedObject(Physics.gravity.normalized);
 
     [MenuItem("Tools/Teleport Object/Forward")]
-    public static void TeleportObjectForward()
-    {
-        if (Selection.activeGameObject == null)
-            return;
-
-        var forwards = Selection.activeTransform.forward;
-        TeleportObject(Selection.activeGameObject, forwards);
-    }
+    public static void TeleportObjectForward() => TeleportSelectedObject(Selection.activeTransform.forward);
 
     [MenuItem("Tools/Teleport Object/Backward")]
-    public static void TeleportObjectBackward()
-    {
-        if (Selection.activeGameObject == null)
-            return;
+    public static void TeleportObjectBackward() => TeleportSelectedObject(-Selection.activeTransform.forward);
 
-        var backwards = -Selection.activeTransform.forward;
-        TeleportObject(Selection.activeGameObject, backwards);
-    }
+    [MenuItem("Tools/Teleport Object/Up")]
+    public static void TeleportObjectUp() => TeleportSelectedObject(Selection.activeTransform.up);
+
+    [MenuItem("Tools/Teleport Object/Down")]
+    public static void TeleportObjectDown() => TeleportSelectedObject(-Selection.activeTransform.up);
+
+    [MenuItem("Tools/Teleport Object/Right")]
+    public static void TeleportObjectRight() => TeleportSelectedObject(Selection.activeTransform.right);
+
+    [MenuItem("Tools/Teleport Object/Left")]
+    public static void TeleportObjectLeft() => TeleportSelectedObject(-Selection.activeTransform.right);
+
+    [MenuItem("Tools/Teleport Object/+X")]
+    public static void TeleportObjectPX() => TeleportSelectedObject(Vector3.right);
+
+    [MenuItem("Tools/Teleport Object/-X")]
+    public static void TeleportObjectNX() => TeleportSelectedObject(Vector3.left);
+
+    [MenuItem("Tools/Teleport Object/+Y")]
+    public static void TeleportObjectPY() => TeleportSelectedObject(Vector3.up);
+
+    [MenuItem("Tools/Teleport Object/-Y")]
+    public static void TeleportObjectNY() => TeleportSelectedObject(Vector3.down);
+
+    [MenuItem("Tools/Teleport Object/+Z")]
+    public static void TeleportObjectPZ() => TeleportSelectedObject(Vector3.forward);
+
+    [MenuItem("Tools/Teleport Object/-Z")]
+    public static void TeleportObjectNZ() => TeleportSelectedObject(Vector3.back);
 }

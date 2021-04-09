@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     new Camera camera;
 
     Picker picker;
+
     public Hand LeftHand;
     public Hand RightHand;
 
@@ -100,7 +101,6 @@ public class PlayerController : MonoBehaviour
 
             // tilt
             {
-                // todo: automatically re-center
                 var delta = Input.GetAxis("Tilt") * lookSpeed * (InvertLookUp ? 1 : -1);
 
                 if (delta == 0)
@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
 
                 var newRoll = Mathf.Clamp(roll + delta, -20, 20);
                 camera.transform.Rotate(Vector3.forward, newRoll - roll, Space.Self);
+                camera.transform.localPosition = new Vector3(Input.GetAxis("Tilt") * 0.75f, camera.transform.localPosition.y, camera.transform.localPosition.z);
             }
         }
 

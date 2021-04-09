@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
+    public bool MirrorTransforms;
+
     public Equippable EquippedItem
     {
         get => _equippedItem;
@@ -37,8 +39,8 @@ public class Hand : MonoBehaviour
 
                 if (_equippedItem.RelativeTransform != null)
                 {
-                    _equippedItem.transform.localPosition = _equippedItem.RelativeTransform.localPosition;
-                    _equippedItem.transform.localRotation = _equippedItem.RelativeTransform.localRotation;
+                    _equippedItem.transform.localPosition = Utility.VectorMultiply(_equippedItem.RelativeTransform.localPosition, MirrorTransforms ? new Vector3(-1, 1, 1) : Vector3.one);
+                    _equippedItem.transform.localEulerAngles = Utility.VectorMultiply(_equippedItem.RelativeTransform.localEulerAngles, MirrorTransforms ? new Vector3(1, 1, -1) : Vector3.one);
                     _equippedItem.transform.localScale = _equippedItem.RelativeTransform.localScale;
                 }
                 else
