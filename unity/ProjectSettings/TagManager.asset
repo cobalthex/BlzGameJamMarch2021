@@ -10,6 +10,7 @@ TagManager:
   - ShowInMinimap
   - MonsterSpawn
   - UI
+  - Door
   layers:
   - Default
   - TransparentFX
