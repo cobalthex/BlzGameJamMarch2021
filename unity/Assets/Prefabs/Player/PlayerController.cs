@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    private float floorEpsilon = 0.01f;
+    private float floorEpsilon = 0.03f;
 
     public float LookSpeed = 150;
     public float MoveSpeed = 1;
@@ -15,21 +15,23 @@ public class PlayerController : MonoBehaviour
     float jumpEndTime = 0;
 
     Transform feet;
-    Rigidbody body;
+    Rigidbody physicsBody;
+
+    Transform model;
     new Camera camera;
 
-    Gun gun;
     Picker picker;
-
-    public Hand LeftHamd;
+    public Hand LeftHand;
     public Hand RightHand;
+
+    // vector3? local gravity
 
     void Start()
     {
         feet = transform.Find("feet");
-        body = GetComponent<Rigidbody>();
+        physicsBody = GetComponent<Rigidbody>();
+        model = transform.Find("body");
         camera = GetComponentInChildren<Camera>();
-        gun = GetComponent<Gun>();
         picker = GetComponent<Picker>();
 
         camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
     }
 
     bool isGrounded;
+    float crouchValue = 0;
 
     void Update()
     {
@@ -121,7 +124,7 @@ public class PlayerController : MonoBehaviour
         move += (Vector3.right * Input.GetAxis("Horizontal"));
         move.Normalize();
 
-        var forwardSpeed = Vector3.Dot(transform.rotation * move, body.velocity);
+        var forwardSpeed = Vector3.Dot(transform.rotation * move, physicsBody.velocity);
         var moveSpeed = Mathf.Lerp(MoveSpeed, 0, forwardSpeed / MaxMovementSpeed);
 
         move *= moveSpeed * (isGrounded ? 1 : 0.4f);
@@ -143,17 +146,27 @@ public class PlayerController : MonoBehaviour
             move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
         }
 
-        body.AddRelativeForce(move, ForceMode.Impulse);
+        physicsBody.AddRelativeForce(move, ForceMode.Impulse);
 
         #endregion
+
+        bool isCrouching = Input.GetButton("Crouch");
+        crouchValue = Mathf.Lerp(crouchValue, isCrouching ? 1 : 0, 0.25f);
+
+        transform.localScale = new Vector3(1, 1 - crouchValue * 0.5f, 1);
+        LeftHand.transform.localScale = RightHand.transform.localScale = new Vector3(1, 1 / transform.localScale.y, 1);
 
         #region Interaction
 
         if (Input.GetButtonDown("Fire1"))
-            Interact(LeftHamd);
+            Interact(LeftHand);
+        else if (Input.GetKeyDown(KeyCode.Z))
+            LeftHand.EquippedItem = null;
 
         if (Input.GetButtonDown("Fire2"))
             Interact(RightHand);
+        else if (Input.GetKeyDown(KeyCode.C))
+            RightHand.EquippedItem = null;
 
         #endregion
     }
