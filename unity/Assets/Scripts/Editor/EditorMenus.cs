@@ -30,7 +30,7 @@ public class EditorMenus
         camera.enabled = true;
     }
 
-    static void DropObject(GameObject obj, Vector3 down)
+    static void TeleportObject(GameObject obj, Vector3 down)
     {
         Vector3 position;
 
@@ -61,72 +61,92 @@ public class EditorMenus
     }
 
     [MenuItem("Tools/Teleport Object/Drop _g")]
-    public static void DropObject()
+    public static void TeleportObject()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var down = Physics.gravity.normalized;
-        DropObject(Selection.activeGameObject, down);
+        TeleportObject(Selection.activeGameObject, down);
     }
 
     [MenuItem("Tools/Teleport Object/+X")]
-    public static void DropObjectPX()
+    public static void TeleportObjectPX()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.right;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
     }
 
     [MenuItem("Tools/Teleport Object/-X")]
-    public static void DropObjectNX()
+    public static void TeleportObjectNX()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.left;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
     }
 
     [MenuItem("Tools/Teleport Object/+Y")]
-    public static void DropObjectPY()
+    public static void TeleportObjectPY()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.up;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
     }
 
     [MenuItem("Tools/Teleport Object/-Y")]
-    public static void DropObjectNY()
+    public static void TeleportObjectNY()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.down;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
     }
 
     [MenuItem("Tools/Teleport Object/+Z")]
-    public static void DropObjectPZ()
+    public static void TeleportObjectPZ()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.forward;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
     }
 
     [MenuItem("Tools/Teleport Object/-Z")]
-    public static void DropObjectNZ()
+    public static void TeleportObjectNZ()
     {
         if (Selection.activeGameObject == null)
             return;
 
         var up = Vector3.back;
-        DropObject(Selection.activeGameObject, up);
+        TeleportObject(Selection.activeGameObject, up);
+    }
+
+    [MenuItem("Tools/Teleport Object/Forward")]
+    public static void TeleportObjectForward()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var forwards = Selection.activeTransform.forward;
+        TeleportObject(Selection.activeGameObject, forwards);
+    }
+
+    [MenuItem("Tools/Teleport Object/Backward")]
+    public static void TeleportObjectBackward()
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        var backwards = -Selection.activeTransform.forward;
+        TeleportObject(Selection.activeGameObject, backwards);
     }
 }

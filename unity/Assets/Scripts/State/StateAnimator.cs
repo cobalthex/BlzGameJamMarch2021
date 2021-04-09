@@ -23,19 +23,32 @@ public class StateAnimator : MonoBehaviour
     /// </summary>
     public Transform OnState;
 
+    public bool UseEulerRotation = false;
+
+    public float Steps = 0;
+
     Vector3 rotationOriginPoint;
 
     void Start()
     {
-        rotationOriginPoint = RotationOrigin == null ? Vector3.zero : RotationOrigin.position - transform.position;
+        rotationOriginPoint = RotationOrigin == null ? Vector3.zero : RotationOrigin.position - transform.position; // local position?
     }
 
     void Update()
     {
-        var rotation = Quaternion.Slerp(OffState.localRotation, OnState.localRotation, State.Value);
+        var stateValue = State.Value;
+        if (Steps > 0)
+            stateValue = Mathf.Round(State.Value * Steps) / Steps;
+
+        Quaternion rotation;
+        if (UseEulerRotation)
+            rotation = Quaternion.Euler(Vector3.Lerp(OffState.localEulerAngles, OnState.localEulerAngles, stateValue)); //not sure how this affects positioning
+        else
+            rotation = Quaternion.Slerp(OffState.localRotation, OnState.localRotation, stateValue);
+
         var originOffset = -(rotation * rotationOriginPoint) + rotationOriginPoint;
         
-        transform.localPosition = Vector3.Lerp(OffState.localPosition, OnState.localPosition, State.Value) + originOffset;
+        transform.localPosition = Vector3.Lerp(OffState.localPosition, OnState.localPosition, stateValue) + originOffset;
         transform.localRotation = rotation;
         // transform.localScale = Vector3.Lerp(OffState.localScale, OnState.localScale, State.Value); * originScale ?
     }

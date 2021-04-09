@@ -61,3 +61,6 @@ crashlytics-build.properties
 # OS Specific
 desktop.ini
 .DS_Store
+
+# fucking unity
+UserSettings/EditorUserSettings.asset

@@ -1,0 +1,392 @@
+// based off https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-1-basic-portal-rendering-7c3d957f656c
+
+#define RECURSIVE_PORTALS
+
+using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor;
+
+public class Portal : MonoBehaviour
+{
+    const int MaxRecursion = 5; // this renders the scene this many times, so this can get expensive
+
+    public enum EnteringBackBehavior
+    {
+        Passthru,
+        Block,
+        Teleport,
+    }
+
+    public Portal LinkedPortal;
+    public int MaxUseCount = -1;
+
+    public EnteringBackBehavior EnteringFromBackBehavior;
+
+    int useCount = 0;
+
+    Camera portalCamera;
+    Renderer surface;
+    RenderTexture surfaceTarget;
+
+    public RenderTexture Fucker;
+
+    Camera viewCamera; // camera looking at this portal
+
+    Transform back;
+    Transform front;
+    Vector4 portalPlane;
+
+    static int frame;
+    static int portalsRendered;
+
+    //public Vector3 Forward => transform.up;
+    //public Vector3 Up => -transform.right;
+
+    bool IsMirror => this == LinkedPortal;
+
+    void Awake()
+    {
+        portalCamera = transform.Find("Viewfinder").GetComponent<Camera>(); // unity sucks
+        surface = GetComponent<Renderer>();
+        back = transform.Find("back");
+        front = transform.Find("front");
+    }
+
+    void Start()
+    {
+        GetComponent<Camera>().enabled = true;
+
+        surfaceTarget = new RenderTexture(Screen.width, Screen.height, 0);
+        //surfaceTarget.Create();
+
+        surface.material.mainTexture = surfaceTarget;
+        portalCamera.targetTexture = surfaceTarget;
+#if RECURSIVE_PORTALS
+        portalCamera.enabled = false;
+#else
+        portalCamera.enabled = true;
+#endif
+
+        // todo: if portal is self-portaling (mirror), flip texture on horizontal access
+
+        viewCamera = Camera.main;
+
+        var plane = new Plane(front.forward, transform.position);
+        portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+    }
+
+    void OnDestroy()
+    {
+        surfaceTarget.Release();
+        Destroy(surfaceTarget);
+    }
+
+    static bool InCamerasFrustum(Renderer renderer, Camera camera)
+    {
+        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
+        return GeometryUtility.TestPlanesAABB(frustumPlanes, renderer.bounds);
+    }
+
+    readonly Vector3[] renderPositions = new Vector3[MaxRecursion];
+    readonly Quaternion[] renderRotations = new Quaternion[MaxRecursion];
+    bool occluded = false;
+
+    bool IsOccluded()
+    {
+        if (LinkedPortal == null)
+        {
+            //viewthroughRt.DiscardContents();
+            return true;
+        }
+
+        //if (portalsRendered > 10)
+        //{
+        //    //Debug.Log("Trying to render too many portals");
+        //    return true;
+        //}
+
+        var dot = Vector3.Dot(viewCamera.transform.position - front.position, front.forward);
+        if (dot < 0)
+        {
+            occluded = true;
+            return true;
+        }
+
+        if (!InCamerasFrustum(surface, viewCamera)) // this should be done automatically
+        {
+            occluded = true;
+            return true;
+        }
+
+        // create a collider with layer Portal to block line-of-sight
+        //{
+        //    var toView = (viewCamera.transform.position - front.position);
+        //    var toViewLength = toView.magnitude;
+        //    if (Physics.Raycast(new Ray(front.position, toView / toViewLength), out var hit, toViewLength, ~LayerMask.NameToLayer("Portal")))
+        //    {
+        //        occluded = true;
+        //        return true;
+        //    }
+        //}
+
+        return false;
+    }
+
+#if RECURSIVE_PORTALS
+
+    private void OnPreCull()
+    {
+        //if (IsOccluded())
+        //    return;
+
+        //if (frame != Time.frameCount)
+        //{
+        //    frame = Time.frameCount;
+        //    portalsRendered = 0;
+        //}
+
+        //++portalsRendered;
+        //occluded = false;
+
+
+        //surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+        ////LinkedPortal.viewthrough.material.SetInt("displayMask", 0);
+
+        //var stack = new Stack<(
+        //    Portal portal,
+        //    Camera view,
+        //    Vector3 position, 
+        //    Quaternion rotation
+        //)>(); // todo: use fixed array
+
+        //var nextPortal = this;
+        //var pos = viewCamera.transform.position;
+        //var rot = viewCamera.transform.rotation;
+
+        //stack.Push((this, viewCamera, pos, rot));
+        //for (int i = 1; i < MaxRecursion; ++i)
+        //{
+        //    pos += new Vector3(0, 0, i);
+        //    var top = stack.Peek();
+        //    stack.Push((
+        //        top.portal.LinkedPortal,
+        //        top.portal.portalCamera,
+        //        pos, 
+        //        rot
+        //    ));
+        //}
+
+        //while (stack.Count > 0)
+        //{
+        //    var top = stack.Pop();
+        //    top.portal.RenderOnce(top.view, top.position, top.rotation);
+        //}
+
+
+        //surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+
+        var localToWorldMatrix = viewCamera.transform.localToWorldMatrix;
+        var renderPositions = new Vector3[MaxRecursion];
+        var renderRotations = new Quaternion[MaxRecursion];
+
+        int startIndex = 0;
+        portalCamera.projectionMatrix = viewCamera.projectionMatrix;
+        for (int i = 0; i < MaxRecursion; i++)
+        {
+            if (i > 0)
+            {
+                // No need for recursive rendering if linked portal is not visible through this portal
+                //if (!CameraUtility.BoundsOverlap(screenMeshFilter, LinkedPortal.screenMeshFilter, portalCam))
+                //{
+                //    break;
+                //}
+            }
+            localToWorldMatrix = transform.localToWorldMatrix * LinkedPortal.transform.worldToLocalMatrix * localToWorldMatrix;
+            int renderOrderIndex = MaxRecursion - i - 1;
+            renderPositions[renderOrderIndex] = localToWorldMatrix.GetColumn(3);
+            renderRotations[renderOrderIndex] = localToWorldMatrix.rotation;
+
+            portalCamera.transform.SetPositionAndRotation(renderPositions[renderOrderIndex], renderRotations[renderOrderIndex]);
+            startIndex = renderOrderIndex;
+        }
+
+        // Hide screen so that camera can see through portal
+        surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+        LinkedPortal.surface.material.SetInt("displayMask", 0);
+
+        for (int i = startIndex; i < MaxRecursion; i++)
+        {
+            portalCamera.transform.SetPositionAndRotation(renderPositions[i], renderRotations[i]);
+            SetNearClipPlane();
+            //HandleClipping();
+            portalCamera.Render();
+
+            if (i == startIndex)
+            {
+                LinkedPortal.surface.material.SetInt("displayMask", 1);
+            }
+        }
+
+        // Unhide objects hidden at start of render
+        surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+    }
+
+#endif
+
+    void RenderOnce(Camera view, Vector3 position, Quaternion rotation)
+    {
+        if (LinkedPortal == null)
+            return;
+
+        //SetCameraView(view);
+        portalCamera.transform.SetPositionAndRotation(position, rotation);
+
+        //SetCameraClipMatrix();
+        portalCamera.Render();
+    }
+
+    void SetCameraView(Camera view)
+    {
+        var lookPosition = GetTargetRelativePosition(this, LinkedPortal, view.transform.position);
+        var lookRotation = GetTargetRelativeRotation(this, LinkedPortal, view.transform.rotation);
+        portalCamera.transform.SetPositionAndRotation(lookPosition, lookRotation);
+    }
+
+    void SetCameraClipMatrix()
+    {
+        var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * LinkedPortal.portalPlane;
+        var obliqueProjectionMatrix = viewCamera.CalculateObliqueMatrix(clipMatrix);
+        portalCamera.projectionMatrix = obliqueProjectionMatrix;
+    }
+
+    static Vector3 GetTargetRelativePosition(Portal source, Portal target, Vector3 position)
+    {
+        if (source == target)
+        {
+            return source.front.position - source.front.forward * 0.01f;
+
+            //var d = position - front.position;
+            //var dot = Vector3.Dot(d, front.right);
+
+            //return front.position - (front.forward * 0.01f) - (front.right * dot);
+
+            //return front.position + Vector3.Reflect(position - front.position, front.forward);
+
+            //var p = new Plane(front.forward, front.position);
+            //var r = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
+            //bool _hit = p.Raycast(r, out var d);
+            //return r.GetPoint(d + 0.01f);
+        }
+
+        return target.back.TransformPoint(source.front.InverseTransformPoint(position));
+    }
+
+    static Quaternion GetTargetRelativeRotation(Portal source, Portal target, Quaternion rotation)
+    {
+        if (source == target)
+        {
+
+            var q = Quaternion.LookRotation(Vector3.Reflect(source.viewCamera.transform.forward, source.back.forward), source.viewCamera.transform.up);
+            return q;
+            rotation.y *= -1;
+            rotation.z *= -1;
+            return rotation;
+        }
+
+        // todo: this does not work if entering the portal backwards (always places user forward)
+        var sourceRelative = Quaternion.Inverse(source.back.transform.rotation) * rotation;
+        return target.front.rotation * sourceRelative;
+    }
+
+    void Teleport(Rigidbody body)
+    {
+        var relVelocity = front.InverseTransformDirection(body.velocity);
+        body.velocity = LinkedPortal.back.TransformDirection(relVelocity);
+
+        var pos = GetTargetRelativePosition(this, LinkedPortal, body.transform.position);
+        var rot = GetTargetRelativeRotation(this, LinkedPortal, body.transform.rotation);
+        body.transform.SetPositionAndRotation(pos, rot);
+
+        ++useCount;
+    }
+
+    HashSet<Collider> ignored = new HashSet<Collider>();
+
+    void OnTriggerEnter(Collider collider)
+    {
+        var velocity = collider.attachedRigidbody.velocity;
+        var entranceDirection = Vector3.Dot(velocity, front.forward);
+
+        var distToPortal = Vector3.Dot(collider.transform.position - transform.position, front.forward); // prevent just-teleported items from being caught
+
+        // did the collider enter the back side?
+        if (distToPortal < 0 && entranceDirection > 0)
+        {
+            switch (EnteringFromBackBehavior)
+            {
+                case EnteringBackBehavior.Passthru:
+                case EnteringBackBehavior.Block:
+                    ignored.Add(collider);
+                    break;
+
+                case EnteringBackBehavior.Teleport:
+                    break;
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider collider)
+    {
+        if (LinkedPortal == null || (MaxUseCount >= 0 && useCount > MaxUseCount))
+            return;
+
+        if (ignored.Contains(collider))
+        {
+            if (EnteringFromBackBehavior == EnteringBackBehavior.Block)
+            {
+                const float pushbackSpeed = 1;
+
+                var entranceDirection = Vector3.Dot(collider.attachedRigidbody.velocity, front.forward);
+
+                collider.attachedRigidbody.velocity += ((entranceDirection + pushbackSpeed) * back.forward);
+                collider.attachedRigidbody.angularVelocity = Vector3.zero; // ?
+            }
+
+            return;
+        }
+
+        // wait until the center crosses the threshold
+        var distToPortal = Vector3.Dot(collider.transform.position - transform.position, front.forward);
+        if (distToPortal > 0)
+            return;
+
+        Teleport(collider.attachedRigidbody);
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        ignored.Remove(collider);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (LinkedPortal != null)
+        {
+            Handles.color = new Color(0.25f, 0, 1f);
+            Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
+        }
+
+        var pct = portalCamera.transform;
+        EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.white);
+    }
+
+    void OnDrawGizmos()
+    {
+        if (occluded)
+            return;
+
+        front ??= transform.Find("front");
+        EditorDrawUtils.DrawArrow(6, front.position, front.position - front.right, front.forward, Color.green); // up
+        EditorDrawUtils.DrawArrow(3, front.position, front.position + front.forward, -front.right, Color.blue); // forward
+    }
+}
