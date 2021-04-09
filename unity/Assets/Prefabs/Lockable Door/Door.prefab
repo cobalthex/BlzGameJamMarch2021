@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!65 &5234815132395901793
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170512306589078234}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.010000003, y: 0.020000005, z: 0.03}
+  m_Center: {x: -0.00000023841858, y: -0.00000011920929, z: 0}
 --- !u!114 &2175649168110273648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +155,24 @@ MonoBehaviour:
   OnState: {fileID: 2595012837781665941}
   UseEulerRotation: 0
   Steps: 0
+--- !u!114 &2198172789274666054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2595012838318976051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ad1ae80db5a9d449299187fedcc5e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LinkedState: {fileID: 2715639502006879988}
+  ResetDelaySec: -1
+  DisableAfterUse: 0
+  CanOnlyUseInDefaultState: 0
+  SetStateImmediately: 0
+  DefaultState: 0
 --- !u!1001 &2089414506281840523
 PrefabInstance:
   m_ObjectHideFlags: 0
