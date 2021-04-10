@@ -28,6 +28,9 @@ public class Gun : Equippable
             var shot = Instantiate(Projectile, Muzzle.position + Muzzle.forward * 0.1f, Muzzle.rotation);
             shot.velocity = shot.transform.forward * ShotSpeed;
             --ammo;
+
+            if (StartingAmmo > 0)
+                HintText = $"{ammo} / {StartingAmmo}";
         }
     }
 

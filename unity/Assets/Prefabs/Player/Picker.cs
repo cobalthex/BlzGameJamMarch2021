@@ -13,6 +13,7 @@ public class Picker : MonoBehaviour
 
     public Collider Pick { get; private set; } = null;
     private Interactable asInteractable;
+    bool wasOutlined;
 
     public Texture Crosshair;
 
@@ -30,7 +31,10 @@ public class Picker : MonoBehaviour
 
                 Outline outline = Pick.GetComponent<Outline>();
                 if (outline != null)
+                {
+                    wasOutlined = outline.enabled;
                     outline.enabled = true;
+                }
 
                 NewPick?.Invoke(this, hit);
             }
@@ -39,7 +43,7 @@ public class Picker : MonoBehaviour
         {
             Outline outline;
             if (Pick != null && (outline = Pick.GetComponent<Outline>()) != null)
-                outline.enabled = false;
+                outline.enabled = wasOutlined;
 
             Pick = null;
         }
