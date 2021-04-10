@@ -11,9 +11,12 @@ GameObject:
   - component: {fileID: 415278}
   - component: {fileID: 3344086}
   - component: {fileID: 2359736}
-  m_Layer: 0
+  - component: {fileID: 7411567115661969143}
+  - component: {fileID: 4028447463266620544}
+  - component: {fileID: 6715659449809986307}
+  m_Layer: 3
   m_Name: SO_RubixCube
-  m_TagString: Untagged
+  m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -81,3 +84,46 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7411567115661969143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf695c78e4aa4545a4d12db8be58a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HintText: 
+  RelativeTransform: {fileID: 0}
+--- !u!65 &4028447463266620544
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198772}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.21697736, y: 0.20838118, z: 0.21697712}
+  m_Center: {x: -0.00000012293458, y: 0.10419059, z: 0}
+--- !u!54 &6715659449809986307
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198772}
+  serializedVersion: 2
+  m_Mass: 0.2
+  m_Drag: 0.01
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

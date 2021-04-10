@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,12 +39,18 @@ public class PlayerController : MonoBehaviour
         camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
 
         // ensure the active camera
-        camera.enabled = false;
-        camera.enabled = true;
+        StartCoroutine(WaitAndSetPlayerCamera());
     }
 
     bool isGrounded;
     float crouchValue = 0;
+
+    IEnumerator WaitAndSetPlayerCamera()
+    {
+        yield return null;
+        camera.enabled = false;
+        camera.enabled = true;
+    }
 
     void Update()
     {

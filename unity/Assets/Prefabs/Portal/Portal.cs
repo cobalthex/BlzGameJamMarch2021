@@ -158,7 +158,7 @@ public class Portal : MonoBehaviour
         // render the linked portals of all subrenders
         subrenders.Push(new Subrender
         {
-            portal = this,
+            portal = LinkedPortal,
             position = GetTargetRelativePosition(viewCamera.transform.position),
             rotation = GetTargetRelativeRotation(viewCamera.transform.rotation),
         });
@@ -167,7 +167,7 @@ public class Portal : MonoBehaviour
         {
             var top = subrenders.Peek();
 
-            foreach (var visible in top.portal.LinkedPortal.VisiblePortals)
+            foreach (var visible in top.portal.VisiblePortals)
             {
                 if (visible.LinkedPortal == null)
                     continue;
@@ -180,7 +180,7 @@ public class Portal : MonoBehaviour
                 // todo: cap at some max number of subrenders (maybe?)
                 subrenders.Push(new Subrender
                 {
-                    portal = visible,
+                    portal = visible.LinkedPortal,
                     position = visible.GetTargetRelativePosition(top.position),
                     rotation = visible.GetTargetRelativeRotation(top.rotation),
                 });
@@ -191,17 +191,16 @@ public class Portal : MonoBehaviour
         while (subrenders.Count > 0)
         {
             var top = subrenders.Pop();
-            if (subrenders.Count >= MaxRecursion)
+            if (subrenders.Count == SubRenderCount)
             {
                 Graphics.Blit(MaxRecursionTexture, surfaceTarget);
                 continue;
             }
 
             portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
-            portalCamera.projectionMatrix = GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
+            portalCamera.projectionMatrix = GetCameraClipMatrix(viewCamera, top.portal.portalPlane);
 
             portalCamera.Render();
-
         }
     }
 

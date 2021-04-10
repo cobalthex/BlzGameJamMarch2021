@@ -34,6 +34,9 @@ public class PortalDebug : EditorWindow
         for (int i = 0; i < RenderedPortals.Count; ++i)
         {
             var portal = RenderedPortals[i];
+            if (portal == null)
+                continue; // can happen if portal destroyed
+
             var text = $"{(i + 1)}. {portal.name} ({portal.SubRenderCount})";
             GUILayout.Label(text, EditorStyles.boldLabel);
             ListPortalsRecursive(portal, 1, portal.MaxRecursion);
