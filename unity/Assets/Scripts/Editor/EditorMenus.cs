@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class EditorMenus
+public static class EditorMenus
 {
     // Start is called before the first frame update
 
@@ -106,4 +106,18 @@ public class EditorMenus
 
     [MenuItem("Tools/Teleport Object/-Z")]
     public static void TeleportObjectNZ() => TeleportSelectedObject(Vector3.back);
+
+    [MenuItem("Tools/Teleport Object/To cursor _c")]
+    public static void TeleportObjectToCursor()
+    {
+        if (Selection.activeTransform == null)
+            return;
+
+        var mousePosition = Event.current.mousePosition;
+        mousePosition.y = SceneView.lastActiveSceneView.position.height - mousePosition.y;
+        var ray = SceneView.lastActiveSceneView.camera.ScreenPointToRay(mousePosition);
+
+        if (Physics.Raycast(ray, out var hit))
+            Selection.activeTransform.position = hit.point; // todo: make smart and push the object out of the floor
+    }
 }
