@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    public Scene scene;
+    public string sceneName;
 
     void OnTriggerEnter(Collider other)
     {
@@ -16,7 +16,7 @@ public class LoadScene : MonoBehaviour
 
     IEnumerator loadScene()
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene.name);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         while (!asyncLoad.isDone)
         {
