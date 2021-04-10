@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +10,17 @@ public class LoadScene : MonoBehaviour
     {
         if (other.tag.Contains("Player"))
         {
-            SceneManager.LoadSceneAsync(scene.name);
+            StartCoroutine(loadScene());
+        }
+    }
+
+    IEnumerator loadScene()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene.name);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
         }
     }
 }
