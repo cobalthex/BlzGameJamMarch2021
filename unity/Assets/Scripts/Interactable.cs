@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
+    public string HintText;
+
     private void Start()
     {
         gameObject.layer = LayerMask.NameToLayer(nameof(Interactable));

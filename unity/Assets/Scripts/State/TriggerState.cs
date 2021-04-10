@@ -30,7 +30,7 @@ public class TriggerState : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (!enabled ||
-            !GetComponent<Collider>().CompareTag(TagFilter))
+            !other.CompareTag(TagFilter))
             return;
 
         didUse = false;

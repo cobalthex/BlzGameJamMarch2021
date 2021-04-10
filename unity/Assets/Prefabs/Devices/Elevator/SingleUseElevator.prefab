@@ -97,6 +97,8 @@ MonoBehaviour:
   RotationOrigin: {fileID: 0}
   OffState: {fileID: 7219242464920850095}
   OnState: {fileID: 7219242463794257758}
+  UseEulerRotation: 0
+  Steps: 0
 --- !u!1 &7219242463794257759
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +188,8 @@ MonoBehaviour:
   RotationOrigin: {fileID: 0}
   OffState: {fileID: 7219242464698980181}
   OnState: {fileID: 7219242463961754179}
+  UseEulerRotation: 0
+  Steps: 0
 --- !u!65 &7219242465411878812
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -215,6 +219,8 @@ MonoBehaviour:
   RotationOrigin: {fileID: 0}
   OffState: {fileID: 7219242464698980181}
   OnState: {fileID: 7219242464561261563}
+  UseEulerRotation: 0
+  Steps: 0
 --- !u!65 &7219242464124048875
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -714,7 +720,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3497185825928522317, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_Name
-      value: Portal
+      value: elevator exit portal
       objectReference: {fileID: 0}
     - target: {fileID: 6507007123742182119, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_RootOrder

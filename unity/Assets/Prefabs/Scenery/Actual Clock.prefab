@@ -283,7 +283,7 @@ MonoBehaviour:
   OffState: {fileID: 8485820290436559315}
   OnState: {fileID: 8485820289781587920}
   UseEulerRotation: 1
-  SnapSegments: 0
+  Steps: 60
 --- !u!1 &8485820290549403871
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +443,7 @@ MonoBehaviour:
   OffState: {fileID: 8485820290436559315}
   OnState: {fileID: 8485820289781587920}
   UseEulerRotation: 1
-  SnapSegments: 0
+  Steps: 0
 --- !u!1 &8485820291153239187
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +543,7 @@ MonoBehaviour:
   OffState: {fileID: 8485820290436559315}
   OnState: {fileID: 8485820289781587920}
   UseEulerRotation: 1
-  SnapSegments: 0
+  Steps: 0
 --- !u!1 &8485820291680589953
 GameObject:
   m_ObjectHideFlags: 0

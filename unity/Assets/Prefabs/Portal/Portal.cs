@@ -4,6 +4,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using System.Linq;
 
 public class Portal : MonoBehaviour
 {
@@ -50,6 +51,7 @@ public class Portal : MonoBehaviour
     static int frame;
     static int portalsRendered;
 
+    private Portal[] visiblePortals;
     Stack<Subrender> subrenders = new Stack<Subrender>();
 
     //public Vector3 Forward => transform.up;
@@ -90,6 +92,18 @@ public class Portal : MonoBehaviour
 
         var plane = new Plane(front.forward, transform.position);
         portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+
+        visiblePortals = FindObjectsOfType<Portal>(true);
+        visiblePortals = visiblePortals.Where(p =>
+        {
+            if (this == p)
+                return false;
+
+            if (!Physics.Raycast(front.position, (p.front.position - front.position).normalized, out var hit))
+                return false;
+
+            return hit.transform == p.transform;
+        }).ToArray();
     }
 
     void OnDestroy()
@@ -98,40 +112,16 @@ public class Portal : MonoBehaviour
         Destroy(surfaceTarget);
     }
 
-    static bool InCamerasFrustum(Renderer renderer, Camera camera)
+    static bool CanSee(Camera from, Portal other, bool raycast = false)
     {
-        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
-        return GeometryUtility.TestPlanesAABB(frustumPlanes, renderer.bounds);
-    }
-
-    bool occluded = false;
-
-    bool IsOccluded()
-    {
-        if (LinkedPortal == null)
-        {
-            //viewthroughRt.DiscardContents();
-            return true;
-        }
-
-        //if (portalsRendered > 10)
-        //{
-        //    //Debug.Log("Trying to render too many portals");
-        //    return true;
-        //}
-
-        var dot = Vector3.Dot(viewCamera.transform.position - front.position, front.forward);
+        // is the portal is facing the camera
+        var dot = Vector3.Dot(from.transform.position - other.front.position, other.front.forward);
         if (dot < 0)
-        {
-            occluded = true;
-            return true;
-        }
+            return false;
 
-        if (!InCamerasFrustum(surface, viewCamera)) // this should be done automatically
-        {
-            occluded = true;
-            return true;
-        }
+        // is the portal in the camera's view frustum
+        if (!Utility.InCamerasFrustum(from, other.surface)) // this should be done automatically
+            return false;
 
         // create a collider with layer Portal to block line-of-sight
         //{
@@ -144,15 +134,20 @@ public class Portal : MonoBehaviour
         //    }
         //}
 
-        return false;
+        return true;
     }
 
     List<Subrender> draws = new List<Subrender>(); // DEBUG
 
+    bool occluded = false;
+
     private void OnPreCull()
     {
-        if (IsOccluded())
+        if (!CanSee(viewCamera, this))
+        {
+            occluded = true;
             return;
+        }
 
         if (frame != Time.frameCount)
         {
@@ -206,7 +201,7 @@ public class Portal : MonoBehaviour
 
             draws.Add(top);
             portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
-            //SetCameraClipMatrix();
+            SetCameraClipMatrix();
 
             portalCamera.Render();
         }
@@ -325,7 +320,14 @@ public class Portal : MonoBehaviour
         if (LinkedPortal != null)
         {
             Handles.color = new Color(0.25f, 0, 1f);
-            Handles.DrawAAPolyLine(2, front.position, LinkedPortal.front.position);
+            Handles.DrawAAPolyLine(3, front.position, LinkedPortal.front.position);
+        }
+
+        Handles.color = new Color(0, 1, 0.25f);
+        if (visiblePortals != null)
+        {
+            foreach (var visible in visiblePortals)
+                Handles.DrawAAPolyLine(1, front.position, visible.front.position);
         }
 
         var pct = portalCamera.transform;

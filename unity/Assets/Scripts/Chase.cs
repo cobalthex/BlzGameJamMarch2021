@@ -49,8 +49,12 @@ public class Chase : MonoBehaviour
             if (timePartial > timeToTeleport)
             {
                 Transform[] destinations = getTeleportDestinations();
-                Transform destination = getClosestDestination(destinations, target);
-                agent.Warp(destination.position);
+                if (destinations.Length > 0)
+                {
+                    Transform destination = getClosestDestination(destinations, target);
+                    agent.Warp(destination.position);
+                }
+
                 timePartial = 0.0f; // reset how long we've been unable to find a path to the player
             }
         }
