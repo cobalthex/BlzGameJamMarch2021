@@ -32,7 +32,8 @@ public class Portal : MonoBehaviour
     public int MaxUseCount = -1;
 
     public EnteringBackBehavior EnteringFromBackBehavior;
-    
+
+    public Texture2D MaxRecursionTexture;
 
     int useCount = 0;
 
@@ -40,22 +41,19 @@ public class Portal : MonoBehaviour
     Renderer surface;
     RenderTexture surfaceTarget;
 
-    public RenderTexture Fucker;
-
-    Camera viewCamera; // camera looking at this portal
-
     Transform back;
     Transform front;
     Vector4 portalPlane;
 
     static int frame;
-    static int portalsRendered;
+    static int totalPortalsRenderedThisFrame;
 
-    private Portal[] visiblePortals;
+    public Portal[] VisiblePortals { get; private set; }
     Stack<Subrender> subrenders = new Stack<Subrender>();
+    public int SubRenderCount { get; private set; }
 
-    //public Vector3 Forward => transform.up;
-    //public Vector3 Up => -transform.right;
+    public Vector3 Forward => front.transform.forward;
+    public Vector3 Up => -front.transform.right;
 
     bool IsMirror => this == LinkedPortal;
 
@@ -67,42 +65,36 @@ public class Portal : MonoBehaviour
         // todo: can probably calculate these
         back = transform.Find("back");
         front = transform.Find("front");
+
+        GetComponent<Camera>().enabled = true;
     }
 
     void Start()
     {
-        GetComponent<Camera>().enabled = true;
-
         surfaceTarget = new RenderTexture(Screen.width, Screen.height, 0)
         {
             name = $"[surface target ({name})]"
         };
         //surfaceTarget.Create();
 
-        //surface.material.mainTexture = surfaceTarget;
-        if (LinkedPortal != null)
-            LinkedPortal.surface.material.mainTexture = surfaceTarget;
+        surface.material.mainTexture = surfaceTarget;
         portalCamera.targetTexture = surfaceTarget;
 
         portalCamera.enabled = false;
 
-        // todo: if portal is self-portaling (mirror), flip texture on horizontal access
-
-        viewCamera = Camera.main;
-
         var plane = new Plane(front.forward, transform.position);
         portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
 
-        visiblePortals = FindObjectsOfType<Portal>(true);
-        visiblePortals = visiblePortals.Where(p =>
+        portalCamera.transform.position = front.position;
+        portalCamera.transform.rotation = Quaternion.LookRotation(Forward, Up);
+
+        VisiblePortals = FindObjectsOfType<Portal>(true);
+        VisiblePortals = VisiblePortals.Where(p =>
         {
             if (this == p)
                 return false;
 
-            if (!Physics.Raycast(front.position, (p.front.position - front.position).normalized, out var hit))
-                return false;
-
-            return hit.transform == p.transform;
+            return CanSee(portalCamera, p, false);
         }).ToArray();
     }
 
@@ -114,50 +106,56 @@ public class Portal : MonoBehaviour
 
     static bool CanSee(Camera from, Portal other, bool raycast = false)
     {
-        // is the portal is facing the camera
-        var dot = Vector3.Dot(from.transform.position - other.front.position, other.front.forward);
-        if (dot < 0)
+        var diff = from.transform.position - other.front.position;
+
+        // is the other portal in front of the camera
+        if (Vector3.Dot(diff, from.transform.forward) >= 0)
+            return false;
+
+        // is the other portal facing the camera
+        if (Vector3.Dot(diff, other.front.forward) < 0)
             return false;
 
         // is the portal in the camera's view frustum
         if (!Utility.InCamerasFrustum(from, other.surface)) // this should be done automatically
             return false;
 
-        // create a collider with layer Portal to block line-of-sight
-        //{
-        //    var toView = (viewCamera.transform.position - front.position);
-        //    var toViewLength = toView.magnitude;
-        //    if (Physics.Raycast(new Ray(front.position, toView / toViewLength), out var hit, toViewLength, ~LayerMask.NameToLayer("Portal")))
-        //    {
-        //        occluded = true;
-        //        return true;
-        //    }
-        //}
+        if (raycast)
+        { 
+            // todo
+            //if (!Physics.Raycast(front.position, (p.front.position - front.position).normalized, out var hit))
+            //    return false;
+
+            // hit.transform == p.transform
+        }
 
         return true;
     }
 
-    List<Subrender> draws = new List<Subrender>(); // DEBUG
-
-    bool occluded = false;
-
-    private void OnPreCull()
+    void OnPreRender()
     {
-        if (!CanSee(viewCamera, this))
-        {
-            occluded = true;
+        if (LinkedPortal == null)
             return;
-        }
+
+        var viewCamera = Camera.main;
+
+        // don't render this portal if it's not in view (since apparently unity won't do this)
+        if (!CanSee(viewCamera, this, false))
+            return;
 
         if (frame != Time.frameCount)
         {
             frame = Time.frameCount;
-            portalsRendered = 0;
+            totalPortalsRenderedThisFrame = 0;
+            PortalDebug.RenderedPortals.Clear();
         }
+        //if (portalsRenderedThisFrame > 15)
+        //    return;
+        //++portalsRenderedThisFrame;
 
-        ++portalsRendered;
-        occluded = false;
+        PortalDebug.RenderedPortals.Add(this);
 
+        // render the linked portals of all subrenders
         subrenders.Push(new Subrender
         {
             portal = this,
@@ -165,55 +163,52 @@ public class Portal : MonoBehaviour
             rotation = GetTargetRelativeRotation(viewCamera.transform.rotation),
         });
 
-        var localToWorldMatrix = viewCamera.transform.localToWorldMatrix;
-
-        // calculate the positions of each recursive render
-        for (int i = 0; i <= MaxRecursion; ++i) // one extra that is drawn specially
+        for (int i = 0; i <= MaxRecursion; ++i)
         {
             var top = subrenders.Peek();
 
-            if (top.portal.LinkedPortal == null)
-                break;
-
-            // todo: occlude
-
-            var next = new Subrender
+            foreach (var visible in top.portal.LinkedPortal.VisiblePortals)
             {
-                portal = top.portal.LinkedPortal,
-                position = top.position + front.forward * 2,
-                rotation = top.portal.GetTargetRelativeRotation(top.rotation),
-            };
-            subrenders.Push(next);
+                if (visible.LinkedPortal == null)
+                    continue;
+
+                // portal might not be visible at some angles
+                portalCamera.transform.SetPositionAndRotation(top.position, top.rotation); // moving camera not ideal
+                if (!Utility.InCamerasFrustum(portalCamera, visible.surface))
+                    continue;
+
+                // todo: cap at some max number of subrenders (maybe?)
+                subrenders.Push(new Subrender
+                {
+                    portal = visible,
+                    position = visible.GetTargetRelativePosition(top.position),
+                    rotation = visible.GetTargetRelativeRotation(top.rotation),
+                });
+            }
         }
-        // draw something if at max recursion
 
-        surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
-        LinkedPortal.surface.material.SetInt("displayMask", 0);
-
-        draws.Clear();
+        SubRenderCount = subrenders.Count;
         while (subrenders.Count > 0)
         {
             var top = subrenders.Pop();
-            if (subrenders.Count == MaxRecursion)
+            if (subrenders.Count >= MaxRecursion)
             {
+                Graphics.Blit(MaxRecursionTexture, surfaceTarget);
                 continue;
             }
 
-            draws.Add(top);
             portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
-            SetCameraClipMatrix();
+            portalCamera.projectionMatrix = GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
 
             portalCamera.Render();
-        }
 
-        surface.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+        }
     }
 
-    void SetCameraClipMatrix()
+    Matrix4x4 GetCameraClipMatrix(Camera viewCamera, Vector4 portalPlane)
     {
-        var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * LinkedPortal.portalPlane;
-        var obliqueProjectionMatrix = viewCamera.CalculateObliqueMatrix(clipMatrix); // todo: this needs to be relative to subrender position
-        portalCamera.projectionMatrix = obliqueProjectionMatrix;
+        var clipMatrix = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * portalPlane;
+        return viewCamera.CalculateObliqueMatrix(clipMatrix);
     }
 
     Vector3 GetTargetRelativePosition(Vector3 position)
@@ -232,8 +227,8 @@ public class Portal : MonoBehaviour
         if (IsMirror)
         {
             // todo
-            var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), viewCamera.transform.up);
-            return q;
+            //var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), UP);
+            //return q;
 
             rotation.y *= -1;
             rotation.z *= -1;
@@ -324,9 +319,9 @@ public class Portal : MonoBehaviour
         }
 
         Handles.color = new Color(0, 1, 0.25f);
-        if (visiblePortals != null)
+        if (VisiblePortals != null)
         {
-            foreach (var visible in visiblePortals)
+            foreach (var visible in VisiblePortals)
                 Handles.DrawAAPolyLine(1, front.position, visible.front.position);
         }
 
@@ -336,18 +331,8 @@ public class Portal : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (occluded)
-            return;
-
         front ??= transform.Find("front");
-        EditorDrawUtils.DrawArrow(6, front.position, front.position - front.right, front.forward, Color.green); // up
-        EditorDrawUtils.DrawArrow(3, front.position, front.position + front.forward, -front.right, Color.blue); // forward
-
-        for (int i = 0; i < draws.Count; ++i)
-        {
-            var c = Color.Lerp(Color.red, Color.blue, i / (float)draws.Count);
-            var pos = draws[i].position + new Vector3(0, 0.03f * i, 0);
-            EditorDrawUtils.DrawArrow(3, pos, pos + draws[i].rotation * Vector3.forward, Vector3.up, c);
-        }
+        EditorDrawUtils.DrawArrow(6, front.position, front.position + Up, Forward, Color.green); // up
+        EditorDrawUtils.DrawArrow(3, front.position, front.position + Forward, Up, Color.blue); // forward
     }
 }

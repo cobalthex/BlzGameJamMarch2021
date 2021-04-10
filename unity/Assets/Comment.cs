@@ -8,7 +8,12 @@ public class Comment : MonoBehaviour
     [Multiline]
     public string Text = "[Enter comment]";
 
-    public GUIStyle Style = GUI.skin.box;
+    public GUIStyle Style;
+
+    private void Start()
+    {
+        Style ??= GUI.skin.box;
+    }
 
     private void OnDrawGizmos()
     {

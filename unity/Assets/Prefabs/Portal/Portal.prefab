@@ -92,7 +92,7 @@ Camera:
   m_Depth: -100
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 15743
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -217,10 +217,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 350a389939ec177448d3a93aaba9f68e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxRecursion: 5
   LinkedPortal: {fileID: 0}
   MaxUseCount: -1
   EnteringFromBackBehavior: 0
-  Fucker: {fileID: 0}
+  MaxRecursionTexture: {fileID: 2800000, guid: dedeb8058807fc74cae0aab53b294e7d, type: 3}
 --- !u!20 &700388528029685184
 Camera:
   m_ObjectHideFlags: 0
