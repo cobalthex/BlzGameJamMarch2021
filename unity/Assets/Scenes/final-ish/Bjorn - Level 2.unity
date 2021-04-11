@@ -6563,6 +6563,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
+      propertyPath: MaxDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
+      propertyPath: MinDistance
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 10d4e22bb5d79463a940c7a3b8c13c89, type: 3}
     - target: {fileID: 6217652252969522608, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: m_Name
       value: Skele Cam
@@ -47940,7 +47952,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1421378562}
   m_LocalRotation: {x: -0, y: -0, z: 0.0000013411044, w: 1}
-  m_LocalPosition: {x: 23.15, y: 4.05, z: -23.04}
+  m_LocalPosition: {x: 38.04, y: 4.05, z: -23.04}
   m_LocalScale: {x: 0.59999996, y: 0, z: 0.29999998}
   m_Children: []
   m_Father: {fileID: 0}
