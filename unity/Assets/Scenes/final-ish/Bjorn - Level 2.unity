@@ -59753,6 +59753,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1978678999970695264, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978678999970695264, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978678999970695264, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 2175649168110273648, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: Keys.Array.size
       value: 1
