@@ -23,6 +23,7 @@ public class Portal : MonoBehaviour
         public Portal portal;
         public Vector3 position;
         public Quaternion rotation;
+        public int depth;
 
         public override string ToString() => $"{portal} {position} {rotation}";
     }
@@ -82,7 +83,7 @@ public class Portal : MonoBehaviour
 
         portalCamera.enabled = false;
 
-        var plane = new Plane(front.forward, transform.position);
+        var plane = new Plane(front.forward, front.position);
         portalPlane = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
 
         portalCamera.transform.position = front.position;
@@ -132,11 +133,18 @@ public class Portal : MonoBehaviour
         return true;
     }
 
+    int lastRenderFrame = 0;
+
     void OnPreRender()
     {
+        // no idea if this is good or bad
+        if (lastRenderFrame == Time.frameCount)
+            return;
+        lastRenderFrame = Time.frameCount;
+
         if (LinkedPortal == null)
             return;
-
+        
         var viewCamera = Camera.main;
 
         // don't render this portal if it's not in view (since apparently unity won't do this)
@@ -161,28 +169,29 @@ public class Portal : MonoBehaviour
             portal = this,
             position = GetTargetRelativePosition(viewCamera.transform.position),
             rotation = GetTargetRelativeRotation(viewCamera.transform.rotation),
+            depth = 0,
         });
 
         for (int i = 0; i <= MaxRecursion; ++i)
         {
             var top = subrenders.Peek();
 
-            foreach (var visible in top.portal.VisiblePortals)
+            foreach (var visible in top.portal.LinkedPortal.VisiblePortals)
             {
                 if (visible.LinkedPortal == null)
-                    continue;
+                    continue; // disabled texture?
 
                 // portal might not be visible at some angles
-                portalCamera.transform.SetPositionAndRotation(top.position, top.rotation); // moving camera not ideal
-                if (!Utility.InCamerasFrustum(portalCamera, visible.surface))
-                    continue;
+                //portalCamera.transform.SetPositionAndRotation(top.position, top.rotation); // moving camera not ideal
+                //if (!Utility.InCamerasFrustum(portalCamera, visible.surface))
+                //    continue;
 
-                // todo: cap at some max number of subrenders (maybe?)
                 subrenders.Push(new Subrender
                 {
                     portal = visible,
                     position = visible.GetTargetRelativePosition(top.position),
                     rotation = visible.GetTargetRelativeRotation(top.rotation),
+                    depth = i,
                 });
             }
         }
@@ -191,16 +200,16 @@ public class Portal : MonoBehaviour
         while (subrenders.Count > 0)
         {
             var top = subrenders.Pop();
-            if (subrenders.Count == SubRenderCount)
+            if (top.depth >= MaxRecursion)
             {
-                Graphics.Blit(MaxRecursionTexture, surfaceTarget);
+                Graphics.Blit(MaxRecursionTexture, top.portal.surfaceTarget);
                 continue;
             }
 
-            top.portal.portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
-            //top.portal.portalCamera.projectionMatrix = GetCameraClipMatrix(viewCamera, top.portal.portalPlane);
-
-            top.portal.portalCamera.Render();
+            var p = top.portal;
+            p.portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
+            p.portalCamera.projectionMatrix = p.GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
+            p.portalCamera.Render();
         }
     }
 
