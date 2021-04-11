@@ -8917,7 +8917,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 272037805}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.7, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 264289059}
@@ -36418,7 +36418,7 @@ PrefabInstance:
     - target: {fileID: 3480737382951881854, guid: d3a6ff604a410d041affe2ab57514bbf, type: 3}
       propertyPath: LinkedCamera
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 334250384}
     - target: {fileID: 3480737383643141014, guid: d3a6ff604a410d041affe2ab57514bbf, type: 3}
       propertyPath: m_RootOrder
       value: 25
@@ -48588,7 +48588,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1897235211}
-  m_RootOrder: 104
+  m_RootOrder: 99
   m_LocalEulerAnglesHint: {x: 0, y: 449.99298, z: 0}
 --- !u!65 &1500544337
 BoxCollider:
@@ -49242,7 +49242,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1897235211}
-  m_RootOrder: 136
+  m_RootOrder: 130
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!65 &1513083897
 BoxCollider:
@@ -56915,7 +56915,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1897235211}
-  m_RootOrder: 108
+  m_RootOrder: 105
   m_LocalEulerAnglesHint: {x: 0, y: 449.99298, z: -89.972}
 --- !u!65 &1779197649
 BoxCollider:
@@ -60702,16 +60702,16 @@ Transform:
   - {fileID: 73065825}
   - {fileID: 336950268}
   - {fileID: 1137098323}
+  - {fileID: 1500544336}
   - {fileID: 1282078046}
   - {fileID: 961960517}
   - {fileID: 2054854800}
   - {fileID: 1049710189}
   - {fileID: 75436758}
-  - {fileID: 1500544336}
+  - {fileID: 1779197648}
   - {fileID: 1089702063}
   - {fileID: 1110916989}
   - {fileID: 386248188}
-  - {fileID: 1779197648}
   - {fileID: 1864715338}
   - {fileID: 1299087988}
   - {fileID: 492711232}
@@ -60733,13 +60733,13 @@ Transform:
   - {fileID: 2090975085}
   - {fileID: 1289363346}
   - {fileID: 1153826929}
+  - {fileID: 1513083896}
   - {fileID: 910494172}
   - {fileID: 1356116633}
   - {fileID: 460007946}
   - {fileID: 1289020017}
   - {fileID: 447687381}
   - {fileID: 696590911}
-  - {fileID: 1513083896}
   - {fileID: 1979213114}
   - {fileID: 866329059}
   - {fileID: 1778471429}
