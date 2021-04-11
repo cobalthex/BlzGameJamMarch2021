@@ -6581,11 +6581,11 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: d6a32bc0c0d7c4024b6ca850fc327a45, type: 3}
     - target: {fileID: 6483969875193438420, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: updateSeconds
-      value: 16
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6483969875193438420, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: timeToTeleport
-      value: 15
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6483969875193438421, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: m_Speed
