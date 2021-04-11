@@ -64143,6 +64143,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 461072483701536775, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 700388528029685184, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 700388528029685184, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
