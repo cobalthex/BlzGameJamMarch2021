@@ -249,7 +249,7 @@ MonoBehaviour:
   MoveSpeed: 4
   MaxMovementSpeed: 4
   JumpSeconds: 0.1
-  JumpStrength: 1
+  JumpStrength: 0
   InvertLookUp: 0
   LeftHand: {fileID: 2176573284906645707}
   RightHand: {fileID: 835315392}
