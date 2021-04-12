@@ -2341,7 +2341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf695c78e4aa4545a4d12db8be58a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HintText: 
+  HintText: Unlocks a Ruby Lock
   RelativeTransform: {fileID: 526811049}
 --- !u!1001 &195699258
 PrefabInstance:
@@ -11453,7 +11453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4424807310591257444, guid: 9a60d006f8fe1334dba5f034aeb3d0da, type: 3}
       propertyPath: m_Name
-      value: gold key
+      value: Gold Key
       objectReference: {fileID: 0}
     - target: {fileID: 8605457536801153931, guid: 9a60d006f8fe1334dba5f034aeb3d0da, type: 3}
       propertyPath: m_RootOrder
@@ -11484,7 +11484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf695c78e4aa4545a4d12db8be58a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HintText: 
+  HintText: Unlocks a Gold Lock
   RelativeTransform: {fileID: 953465169}
 --- !u!1001 &1165754200
 PrefabInstance:
@@ -11610,8 +11610,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 2af43a7e814c5ad4a9bd29f38949dcdd, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Ruby Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978678999970695264, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 9.100192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978678999970695264, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 7.8224998
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175649168110273648, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: HintText
+      value: Find the Ruby key to unlock
       objectReference: {fileID: 0}
     - target: {fileID: 2175649168110273648, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Enabled
@@ -11667,7 +11683,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: ITOfficeDoor
+      value: Bathroom Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709193, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_RootOrder
@@ -11731,7 +11747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_ITOfficeDoor
+      value: Bathroom Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14070,7 +14086,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1662758868398974753, guid: da2e7e460db87fd44b48f1518ed3c2ed, type: 3}
       propertyPath: m_Name
-      value: TestGun
+      value: Coffee Mug
       objectReference: {fileID: 0}
     - target: {fileID: 2622591425987213093, guid: da2e7e460db87fd44b48f1518ed3c2ed, type: 3}
       propertyPath: m_RootOrder
@@ -18844,6 +18860,34 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 618291869247059288, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
+    - target: {fileID: 1410859638946272397, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792346826668789303, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 9.153
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792346826668789303, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 8.533
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792346826668789303, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.097
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792346826668789303, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.182
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792346826668789303, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.049
+      objectReference: {fileID: 0}
     - target: {fileID: 5111532837536497571, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: sceneName
       value: Bjorn - Level 2
@@ -18896,8 +18940,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: Exit Elevator
       objectReference: {fileID: 0}
+    - target: {fileID: 7219242465396753173, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_Name
+      value: Elevator Buttons
+      objectReference: {fileID: 0}
+    - target: {fileID: 7219242465396753178, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: HintText
+      value: Use to Win Level
+      objectReference: {fileID: 0}
     - target: {fileID: 7219242465396753178, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7417571748261800614, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: HintText
+      value: Find the gold key to unlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 7417571748261800614, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: UseAction
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7417571748261800614, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
@@ -20682,7 +20742,7 @@ GameObject:
   - component: {fileID: 1521827422441275026}
   - component: {fileID: 190004479}
   m_Layer: 3
-  m_Name: ruby key
+  m_Name: Ruby Key
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,6 +11,7 @@ TagManager:
   - MonsterSpawn
   - UI
   - Door
+  - Enemy
   layers:
   - Default
   - TransparentFX
