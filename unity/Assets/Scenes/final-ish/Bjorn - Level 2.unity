@@ -144,7 +144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_RootOrder
-      value: 33
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_LocalPosition.x
@@ -284,7 +284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 452192, guid: 94f4620a533a8bc4cbd53f07b8a1e05e, type: 3}
       propertyPath: m_RootOrder
-      value: 41
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 452192, guid: 94f4620a533a8bc4cbd53f07b8a1e05e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -345,6 +345,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
@@ -390,7 +394,7 @@ PrefabInstance:
       objectReference: {fileID: 1575186189}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SecurityDoor
+      value: Security Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -478,7 +482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_SecurityDoor
+      value: Security Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -5935,6 +5939,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
@@ -5984,7 +5992,7 @@ PrefabInstance:
       objectReference: {fileID: 1575186189}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: StorageDoor
+      value: Storage Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -6060,7 +6068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_StorageDoor
+      value: Storage Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -6699,13 +6707,17 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
+    - target: {fileID: 1410859638946272397, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
     - target: {fileID: 5111532837536497571, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: sceneName
       value: Winner Level
       objectReference: {fileID: 0}
     - target: {fileID: 7219242465102086637, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: m_RootOrder
-      value: 43
+      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 7219242465102086637, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6751,9 +6763,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Exit Elevator
       objectReference: {fileID: 0}
+    - target: {fileID: 7219242465396753173, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: m_Name
+      value: Elevator Switch
+      objectReference: {fileID: 0}
+    - target: {fileID: 7219242465396753178, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: HintText
+      value: Use to Win Level
+      objectReference: {fileID: 0}
     - target: {fileID: 7219242465396753178, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7417571748261800614, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
+      propertyPath: HintText
+      value: Find the gold key to unlock
       objectReference: {fileID: 0}
     - target: {fileID: 7417571748261800614, guid: 0b4d941be2981e341b86c7f6592b7054, type: 3}
       propertyPath: m_Enabled
@@ -7535,7 +7559,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 407960, guid: 26a51d653bd7111429b1afe89194a707, type: 3}
       propertyPath: m_RootOrder
-      value: 30
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 407960, guid: 26a51d653bd7111429b1afe89194a707, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16594,7 +16618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_RootOrder
-      value: 37
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18111,7 +18135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 406502, guid: 0bf8a1d180451d0428cae6cdd04c80d1, type: 3}
       propertyPath: m_RootOrder
-      value: 31
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 406502, guid: 0bf8a1d180451d0428cae6cdd04c80d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20142,7 +20166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6507007123742182119, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_RootOrder
-      value: 36
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 6507007123742182119, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_LocalScale.x
@@ -23169,7 +23193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_RootOrder
-      value: 40
+      value: 39
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24743,7 +24767,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_RootOrder
-      value: 39
+      value: 38
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -25797,7 +25821,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6507007123742182119, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_RootOrder
-      value: 35
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 6507007123742182119, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_LocalScale.x
@@ -26157,7 +26181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 404216, guid: cd842848e467b6147b176f880461d4c5, type: 3}
       propertyPath: m_RootOrder
-      value: 32
+      value: 31
       objectReference: {fileID: 0}
     - target: {fileID: 404216, guid: cd842848e467b6147b176f880461d4c5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -45348,7 +45372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 452192, guid: 94f4620a533a8bc4cbd53f07b8a1e05e, type: 3}
       propertyPath: m_RootOrder
-      value: 38
+      value: 37
       objectReference: {fileID: 0}
     - target: {fileID: 452192, guid: 94f4620a533a8bc4cbd53f07b8a1e05e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -46093,7 +46117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_RootOrder
-      value: 34
+      value: 33
       objectReference: {fileID: 0}
     - target: {fileID: 401290, guid: 48904ac029cf0f8478666c43b7e018b3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -50069,6 +50093,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
@@ -50118,7 +50146,7 @@ PrefabInstance:
       objectReference: {fileID: 1575186189}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: BathroomDoor
+      value: Bathroom Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -50194,7 +50222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_BathroomDoor
+      value: Bathroom Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -50289,7 +50317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_RootOrder
-      value: 42
+      value: 41
       objectReference: {fileID: 0}
     - target: {fileID: 469706, guid: 1e8d81f7c7bde9644b23cbfa35ff08ea, type: 3}
       propertyPath: m_LocalPosition.x
@@ -59790,6 +59818,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
@@ -59847,7 +59879,7 @@ PrefabInstance:
       objectReference: {fileID: 1575186189}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SecretDoor
+      value: Secret Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -59923,7 +59955,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_SecretDoor
+      value: Secret Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -62958,6 +62990,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 52b3795c82a62ee41988e7fa859c8635, type: 2}
     - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: m_Name
+      value: Gold Lock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170512306589078234, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
@@ -63007,7 +63043,7 @@ PrefabInstance:
       objectReference: {fileID: 1575186189}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: ITOfficeDoor
+      value: IT Office Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -63083,7 +63119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_ITOfficeDoor
+      value: IT Office Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -67585,7 +67621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: HubElevatorDoor
+      value: Hub Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
@@ -67665,7 +67701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
-      value: SO_HubElevatorDoor
+      value: Hub Elevator Door
       objectReference: {fileID: 0}
     - target: {fileID: 2595012838318976051, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Layer
