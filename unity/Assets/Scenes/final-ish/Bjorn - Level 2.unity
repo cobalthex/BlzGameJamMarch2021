@@ -6101,6 +6101,10 @@ PrefabInstance:
       propertyPath: AnyOfTheseKeys.Array.data[4]
       value: 
       objectReference: {fileID: 1987047167}
+    - target: {fileID: 2198172789274666054, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: DefaultState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
       value: Storage Door
@@ -50285,6 +50289,10 @@ PrefabInstance:
       propertyPath: AnyOfTheseKeys.Array.data[4]
       value: 
       objectReference: {fileID: 1987047167}
+    - target: {fileID: 2198172789274666054, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: DefaultState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
       value: Bathroom Door
@@ -63099,6 +63107,10 @@ PrefabInstance:
       propertyPath: AnyOfTheseKeys.Array.data[4]
       value: 
       objectReference: {fileID: 1987047167}
+    - target: {fileID: 2198172789274666054, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: DefaultState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
       value: IT Office Door
@@ -63189,7 +63201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2715639502006879988, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: DesiredValue
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
@@ -67750,6 +67762,10 @@ PrefabInstance:
     - target: {fileID: 2175649168110273648, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: AnyOfTheseKeys.Array.data[0]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2198172789274666054, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
+      propertyPath: DefaultState
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2595012837359709192, guid: 585adc9dfa8d7f44aab522b7414072ed, type: 3}
       propertyPath: m_Name
