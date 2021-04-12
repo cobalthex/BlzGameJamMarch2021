@@ -6510,17 +6510,25 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: MaxDistance
-      value: 10
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: MinDistance
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 10d4e22bb5d79463a940c7a3b8c13c89, type: 3}
+    - target: {fileID: 1837612274, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6217652252969522608, guid: bfde6bf774c6c8a46b4f7691be049442, type: 3}
       propertyPath: m_Name
       value: Skele Cam
