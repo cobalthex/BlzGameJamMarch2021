@@ -141,9 +141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 350a389939ec177448d3a93aaba9f68e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxRecursion: 5
   LinkedPortal: {fileID: 1578993012}
   MaxUseCount: 0
   EnteringFromBackBehavior: 0
+  MaxRecursionTexture: {fileID: 0}
+  Mirror: 1
 --- !u!1 &547330781
 GameObject:
   m_ObjectHideFlags: 0

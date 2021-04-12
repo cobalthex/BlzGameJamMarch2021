@@ -17,12 +17,14 @@ public class Chase : MonoBehaviour
     private float timePartial;
     private Animator animator;
 
+    private ScreenFade fadeOut;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
         animator = GetComponentInChildren<Animator>();
+        fadeOut = GetComponent<ScreenFade>();
         agent.destination = target.position;
         updateCountdown = updateSeconds;
         isPartial = false;
@@ -81,6 +83,7 @@ public class Chase : MonoBehaviour
             GameObject uiObject = GameObject.FindGameObjectWithTag("UI");
             UIController uiController = uiObject.GetComponent<UIController>();
             uiController.BroadcastMessage("gameOver");
+            fadeOut.enabled = true;
         }
     }
 

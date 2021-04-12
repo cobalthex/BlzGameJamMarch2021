@@ -55,8 +55,9 @@ public class Portal : MonoBehaviour
 
     public Vector3 Forward => front.transform.forward;
     public Vector3 Up => -front.transform.right;
+    public Vector3 Right => front.transform.up;
 
-    bool IsMirror => this == LinkedPortal;
+    public bool Mirror;
 
     void Awake()
     {
@@ -72,14 +73,16 @@ public class Portal : MonoBehaviour
 
     void Start()
     {
-        surfaceTarget = new RenderTexture(Screen.width, Screen.height, 0)
+        surfaceTarget = new RenderTexture(Screen.width, Screen.height, 0)//, RenderTextureFormat.DefaultHDR)
         {
-            name = $"[surface target ({name})]"
+            name = $"[surface target ({name})]",
         };
         //surfaceTarget.Create();
 
         surface.material.mainTexture = surfaceTarget;
         portalCamera.targetTexture = surfaceTarget;
+
+        surface.material.SetInt("_IsMirror", Mirror ? 1 : 0);
 
         portalCamera.enabled = false;
 
@@ -138,9 +141,9 @@ public class Portal : MonoBehaviour
     void OnPreRender()
     {
         // no idea if this is good or bad
-        if (lastRenderFrame == Time.frameCount)
-            return;
-        lastRenderFrame = Time.frameCount;
+        //if (lastRenderFrame == Time.frameCount)
+        //    return;
+        //lastRenderFrame = Time.frameCount;
 
         if (LinkedPortal == null)
             return;
@@ -176,15 +179,18 @@ public class Portal : MonoBehaviour
         {
             var top = subrenders.Peek();
 
+            if (top.portal.LinkedPortal.VisiblePortals.Length == 0)
+                break;
+
             foreach (var visible in top.portal.LinkedPortal.VisiblePortals)
             {
                 if (visible.LinkedPortal == null)
                     continue; // disabled texture?
 
                 // portal might not be visible at some angles
-                //portalCamera.transform.SetPositionAndRotation(top.position, top.rotation); // moving camera not ideal
-                //if (!Utility.InCamerasFrustum(portalCamera, visible.surface))
-                //    continue;
+                portalCamera.transform.SetPositionAndRotation(top.position, top.rotation); // moving camera not ideal
+                if (!Utility.InCamerasFrustum(portalCamera, visible.surface))
+                    continue;
 
                 subrenders.Push(new Subrender
                 {
@@ -221,10 +227,11 @@ public class Portal : MonoBehaviour
 
     Vector3 GetTargetRelativePosition(Vector3 position)
     {
-        if (IsMirror)
+        if (Mirror)
         {
-            // todo
-            return front.position - front.forward * 0.01f;
+            var reflected = front.position - Vector3.Reflect(position - front.position, Right);
+            reflected += Vector3.Project(position - front.position, Up) * 2;
+            return reflected;
         }
 
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
@@ -232,12 +239,8 @@ public class Portal : MonoBehaviour
 
     Quaternion GetTargetRelativeRotation(Quaternion rotation)
     {
-        if (IsMirror)
+        if (Mirror)
         {
-            // todo
-            //var q = Quaternion.LookRotation(Vector3.Reflect(viewCamera.transform.forward, back.forward), UP);
-            //return q;
-
             rotation.y *= -1;
             rotation.z *= -1;
             return rotation;
@@ -334,7 +337,8 @@ public class Portal : MonoBehaviour
         }
 
         var pct = portalCamera.transform;
-        EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.white);
+        EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.black);
+
     }
 
     void OnDrawGizmos()

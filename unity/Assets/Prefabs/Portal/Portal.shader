@@ -6,6 +6,7 @@ Shader "Portal Viewthrough"
     {
         _Color ("Tint", Color) = (1, 1, 1, 1)
         _MainTex ("Texture", 2D) = "white" {}
+        _IsMirror ("IsMirror", Int) = 0
     }
 
     SubShader
@@ -31,6 +32,8 @@ Shader "Portal Viewthrough"
 
             fixed4 _Color; // tint
 
+            int _IsMirror = 0; // 1 or 0
+
             struct VertexOutput
             {
                 float4 position       : SV_POSITION;
@@ -50,9 +53,9 @@ Shader "Portal Viewthrough"
             //the fragment shader
             fixed4 FragmentFn(VertexOutput input) : SV_TARGET
             {
-                float2 textureCoordinate = input.screenPosition.xy / input.screenPosition.w;
+                float2 texcoord = input.screenPosition.xy / input.screenPosition.w;
 
-                fixed4 col = tex2D(_MainTex, textureCoordinate);
+                fixed4 col = tex2D(_MainTex, _IsMirror ? float2(1 - texcoord.x, texcoord.y) : texcoord);
                 col *= _Color;
                 
                 return col;
