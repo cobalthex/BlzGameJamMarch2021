@@ -20,17 +20,7 @@ public class LoadScene : MonoBehaviour
         if (other.tag.Contains("Player"))
         {
             Debug.Log("Changing scene to " + sceneName);
-            StartCoroutine(loadScene());
-        }
-    }
-
-    IEnumerator loadScene()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
+            StartCoroutine(Utility.LoadSceneCoroutine(sceneName));
         }
     }
 }

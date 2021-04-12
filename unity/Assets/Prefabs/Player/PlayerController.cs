@@ -73,52 +73,6 @@ public class PlayerController : MonoBehaviour
 
         #region Movement
 
-        if (Cursor.lockState != CursorLockMode.None)
-        {
-            var lookSpeed = LookSpeed * Time.deltaTime;
-
-            var q = camera.transform.localRotation; // transform.localEulerAngles are absoluted so calc manually
-
-            //var yaw = Mathf.Asin(-2.0f * (q.x * q.z - q.w * q.y)) * Mathf.Rad2Deg;
-            var pitch = Mathf.Atan2(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z) * Mathf.Rad2Deg;
-            var roll = Mathf.Atan2(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z) * Mathf.Rad2Deg;
-
-            // horizontal rotation
-            {
-                transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * lookSpeed, Space.World);
-            }
-
-            // vertical rotation
-            {
-                /* the hard way */
-                // // quaternion rotations are always unsigned
-                // var oldPitch = Quaternion.Angle(camera.transform.localRotation, Quaternion.AngleAxis(0, Vector3.right));
-                // // there is probably a smarter way to do this
-                // var dot = Quaternion.Dot(camera.transform.localRotation, Quaternion.AngleAxis(90, Vector3.right));
-                // dot = (dot * 2) - 1; // since only using -90->90, convert 0-1 to -1-1
-                // oldPitch *= Mathf.Sign(dot);
-
-                var delta = Input.GetAxis("Mouse Y") * lookSpeed * (InvertLookUp ? 1 : -1);
-                var newPitch = Mathf.Clamp(pitch + delta, -89, 89);
-                camera.transform.Rotate(Vector3.right, newPitch - pitch, Space.Self);
-
-                //camera.transform.localRotation *= 
-            }
-
-
-            // tilt
-            {
-                var delta = Input.GetAxis("Tilt") * lookSpeed * (InvertLookUp ? 1 : -1);
-
-                if (delta == 0)
-                    delta = -roll + Mathf.Round(Mathf.Lerp(roll, 0, 0.25f) * 10) / 10;
-
-                var newRoll = Mathf.Clamp(roll + delta, -20, 20);
-                camera.transform.Rotate(Vector3.forward, newRoll - roll, Space.Self);
-                camera.transform.localPosition = new Vector3(Input.GetAxis("Tilt") * 0.75f, camera.transform.localPosition.y, camera.transform.localPosition.z);
-            }
-        }
-
         var move = new Vector3();
 
         // not very reliable
@@ -177,6 +131,55 @@ public class PlayerController : MonoBehaviour
             RightHand.EquippedItem = null;
 
         #endregion
+    }
+
+    private void FixedUpdate()
+    {
+        if (Cursor.lockState != CursorLockMode.None)
+        {
+            var lookSpeed = LookSpeed * Time.deltaTime;
+
+            var q = camera.transform.localRotation; // transform.localEulerAngles are absoluted so calc manually
+
+            //var yaw = Mathf.Asin(-2.0f * (q.x * q.z - q.w * q.y)) * Mathf.Rad2Deg;
+            var pitch = Mathf.Atan2(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z) * Mathf.Rad2Deg;
+            var roll = Mathf.Atan2(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z) * Mathf.Rad2Deg;
+
+            // horizontal rotation
+            {
+                transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * lookSpeed, Space.World);
+            }
+
+            // vertical rotation
+            {
+                /* the hard way */
+                // // quaternion rotations are always unsigned
+                // var oldPitch = Quaternion.Angle(camera.transform.localRotation, Quaternion.AngleAxis(0, Vector3.right));
+                // // there is probably a smarter way to do this
+                // var dot = Quaternion.Dot(camera.transform.localRotation, Quaternion.AngleAxis(90, Vector3.right));
+                // dot = (dot * 2) - 1; // since only using -90->90, convert 0-1 to -1-1
+                // oldPitch *= Mathf.Sign(dot);
+
+                var delta = Input.GetAxis("Mouse Y") * lookSpeed * (InvertLookUp ? 1 : -1);
+                var newPitch = Mathf.Clamp(pitch + delta, -89, 89);
+                camera.transform.Rotate(Vector3.right, newPitch - pitch, Space.Self);
+
+                //camera.transform.localRotation *= 
+            }
+
+
+            // tilt
+            {
+                var delta = Input.GetAxis("Tilt") * lookSpeed * (InvertLookUp ? 1 : -1);
+
+                if (delta == 0)
+                    delta = -roll + Mathf.Round(Mathf.Lerp(roll, 0, 0.25f) * 10) / 10;
+
+                var newRoll = Mathf.Clamp(roll + delta, -20, 20);
+                camera.transform.Rotate(Vector3.forward, newRoll - roll, Space.Self);
+                camera.transform.localPosition = new Vector3(Input.GetAxis("Tilt") * 0.75f, camera.transform.localPosition.y, camera.transform.localPosition.z);
+            }
+        }
     }
 
     void Interact(Hand hand)

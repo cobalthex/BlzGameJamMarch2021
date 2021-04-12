@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Utility
 {
@@ -12,5 +14,21 @@ public static class Utility
         // calculate once per frame?
         Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
         return GeometryUtility.TestPlanesAABB(frustumPlanes, renderer.bounds);
+    }
+    public static T GetChildComponentByName<T>(this Component parent, string name, bool recursive = true) where T : Component
+    {
+        foreach (T component in parent.GetComponentsInChildren<T>(true))
+        {
+            if (component.gameObject.name == name)
+                return component;
+        }
+        return null;
+    }
+    public static IEnumerator LoadSceneCoroutine(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+            yield return null;
     }
 }

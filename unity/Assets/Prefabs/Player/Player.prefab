@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookSpeed: 150
-  MoveSpeed: 2
-  MaxMovementSpeed: 3
+  MoveSpeed: 4
+  MaxMovementSpeed: 4
   JumpSeconds: 0.1
   JumpStrength: 1
   InvertLookUp: 0
@@ -610,6 +610,10 @@ PrefabInstance:
     - target: {fileID: 6866584500076412400, guid: de08b21a21c13fc42a5ffca45b615c53, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866584500076412400, guid: de08b21a21c13fc42a5ffca45b615c53, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6866584500076412407, guid: de08b21a21c13fc42a5ffca45b615c53, type: 3}
       propertyPath: m_Pivot.x

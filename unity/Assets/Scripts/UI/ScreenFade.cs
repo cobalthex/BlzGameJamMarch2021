@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ScreenFade : MonoBehaviour
@@ -5,13 +6,16 @@ public class ScreenFade : MonoBehaviour
     public Color StartColor = Color.white;
     public Color EndColor = new Color(1, 1, 1, 0);
 
-    public float Duration = 2;
+    public float DurationSec = 2;
+
+    public bool DisableAfter = true;
 
     float startTime;
+    Color currentColor;
 
     static Texture2D tex;
 
-    private void Start()
+    private void Awake()
     {
         if (tex == null)
         {
@@ -23,18 +27,23 @@ public class ScreenFade : MonoBehaviour
     private void OnEnable()
     {
         startTime = Time.time;
+        StartCoroutine(Fade(DurationSec));
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator Fade(float durationSec)
     {
-        if (Time.time > startTime + Duration)
-            enabled = false;
+        while (Time.time < startTime + DurationSec)
+        {
+            currentColor = Color.Lerp(StartColor, EndColor, (Time.time - startTime) / DurationSec);
+            yield return null;
+        }
+
+        enabled = !DisableAfter;
     }
+
 
     private void OnGUI()
     {
-        var c = Color.Lerp(StartColor, EndColor, (Time.time - startTime) / Duration);
-        Graphics.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), tex, new Rect(0, 0, 1, 1), 0, 0, 0, 0, c);
+        Graphics.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), tex, new Rect(0, 0, 1, 1), 0, 0, 0, 0, currentColor);
     }
 }

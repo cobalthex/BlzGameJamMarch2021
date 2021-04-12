@@ -324,7 +324,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartColor: {r: 0.7735849, g: 0.11311854, b: 0.13951953, a: 0}
   EndColor: {r: 0, g: 0.002447496, b: 0.002447496, a: 1}
-  Duration: 4
+  DurationSec: 2
+  DisableAfter: 0
 --- !u!1001 &6483969875243500180
 PrefabInstance:
   m_ObjectHideFlags: 0
