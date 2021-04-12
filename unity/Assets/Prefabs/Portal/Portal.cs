@@ -229,11 +229,12 @@ public class Portal : MonoBehaviour
     {
         if (Mirror)
         {
+            position += Vector3.Project(position - front.position, Up) * 2;
             var reflected = front.position - Vector3.Reflect(position - front.position, Right);
-            reflected += Vector3.Project(position - front.position, Up) * 2;
             return reflected;
         }
-
+        
+        //position -= Vector3.Project(position - front.position, Up);
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
     }
 
