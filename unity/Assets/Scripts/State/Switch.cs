@@ -62,7 +62,7 @@ public class Switch : Interactable
 
     void Awake()
     {
-        State = DefaultState;
+        _state = DefaultState;
         if (LinkedState != null)
             LinkedState.Value = LinkedState.DesiredValue = (State == SwitchState.Off ? 0 : 1);
     }

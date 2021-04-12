@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 6483969875193438421}
   - component: {fileID: 6483969875193438420}
   - component: {fileID: 1837612274}
-  - component: {fileID: 2420617993731182707}
+  - component: {fileID: 2210630579099828939}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -310,22 +310,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2420617993731182707
+--- !u!114 &2210630579099828939
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6483969875193438411}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37d418d66eba8474a9879860d0cd0c93, type: 3}
+  m_Script: {fileID: 11500000, guid: 23f2e800da4b65f44aa74ff3f1700831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartColor: {r: 0.7735849, g: 0.11311854, b: 0.13951953, a: 0}
-  EndColor: {r: 0, g: 0.002447496, b: 0.002447496, a: 1}
-  DurationSec: 2
-  DisableAfter: 0
+  Type: 0
 --- !u!1001 &6483969875243500180
 PrefabInstance:
   m_ObjectHideFlags: 0

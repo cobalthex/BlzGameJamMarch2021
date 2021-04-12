@@ -13,6 +13,10 @@ public class DisplayFps : MonoBehaviour
         {
             alignment = TextAnchor.UpperRight,
         };
+
+#if !DEBUG
+        enabled = false;
+#endif
     }
 
     void OnGUI()

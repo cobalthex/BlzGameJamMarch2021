@@ -36,6 +36,9 @@ public class StateAnimator : MonoBehaviour
 
     void Update()
     {
+        if (State == null)
+            return;
+
         var stateValue = State.Value;
         if (Steps > 0)
             stateValue = Mathf.Round(State.Value * Steps) / Steps;

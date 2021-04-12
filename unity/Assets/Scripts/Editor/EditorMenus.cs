@@ -120,4 +120,20 @@ public static class EditorMenus
         if (Physics.Raycast(ray, out var hit))
             Selection.activeTransform.position = hit.point; // todo: make smart and push the object out of the floor
     }
+
+    [MenuItem("Tools/Teleport Object/Center on origin")]
+    public static void TeleportObjectsToOrigin()
+    {
+        if (Selection.gameObjects.Length == 0)
+            return;
+
+        var center = Selection.gameObjects[0].transform.position;
+        for (int i = 1; i < Selection.gameObjects.Length; ++i)
+            center += Selection.gameObjects[i].transform.position;
+
+        center /= Selection.gameObjects.Length;
+
+        foreach (var obj in Selection.gameObjects)
+            obj.transform.position = center - obj.transform.position;
+    }
 }

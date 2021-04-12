@@ -2,6 +2,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameOverType
+{
+    Lose,
+    Win,
+}
+
 public static class Utility
 {
     public static Vector3 VectorMultiply(Vector3 a, Vector3 b)
@@ -30,5 +36,17 @@ public static class Utility
 
         while (!asyncLoad.isDone)
             yield return null;
+    }
+
+    public static void ActivateGameOver(GameOverType type)
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<PlayerController>().enabled = false;
+        player.GetComponent<Picker>().enabled = false;
+        Cursor.lockState = CursorLockMode.None;
+
+        GameObject uiObject = GameObject.FindGameObjectWithTag("UI");
+        GameOverUIController uiController = uiObject.GetComponent<GameOverUIController>();
+        uiController.BroadcastMessage(type == GameOverType.Win ? "OnWin" : "OnLose");
     }
 }

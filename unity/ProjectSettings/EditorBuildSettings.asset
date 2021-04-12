@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/final-ish/intro/intro.unity
+    path: Assets/Scenes/final-ish/intro.unity
     guid: 60d2af386337db04a89be55c05c33c68
   - enabled: 1
     path: Assets/Scenes/final-ish/Bjorn - Level 1.unity

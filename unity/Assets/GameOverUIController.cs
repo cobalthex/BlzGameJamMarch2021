@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameOverUIController : MonoBehaviour
 {
-    public int SceneChangeDelay;
+    public int LoseSceneChangeDelay;
 
     Transform win;
     Transform lose;
@@ -19,7 +19,7 @@ public class GameOverUIController : MonoBehaviour
     public void OnLose()
     {
         lose.gameObject.SetActive(true);
-        StartCoroutine(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoseCoroutine());
     }
 
     public void OnWin()
@@ -27,14 +27,14 @@ public class GameOverUIController : MonoBehaviour
         win.gameObject.SetActive(true);
     }
 
-    IEnumerator LoadSceneCoroutine(string sceneName)
+    IEnumerator LoseCoroutine()
     {
-        yield return new WaitForSecondsRealtime(SceneChangeDelay);
-        yield return LoadSceneCoroutine(sceneName);
+        yield return new WaitForSecondsRealtime(LoseSceneChangeDelay);
+        yield return Utility.LoadSceneCoroutine(SceneManager.GetActiveScene().name);
     }
 
     public void BeginChangeScene(string sceneName)
     {
-        StartCoroutine(LoadSceneCoroutine(sceneName));
+        StartCoroutine(Utility.LoadSceneCoroutine(sceneName));
     }
 }

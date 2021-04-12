@@ -15,12 +15,19 @@ public class LoadScene : MonoBehaviour
     //    }
     //}
 
-    void OnTriggerEnter(Collider other)
+    private void Start()
     {
+        // required for enabling/disabling in inspector
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (!enabled)
+            return;
+
         if (other.tag.Contains("Player"))
-        {
-            Debug.Log("Changing scene to " + sceneName);
             StartCoroutine(Utility.LoadSceneCoroutine(sceneName));
-        }
+
+        enabled = false;
     }
 }

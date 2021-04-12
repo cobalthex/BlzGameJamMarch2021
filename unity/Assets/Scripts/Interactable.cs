@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Interactable : MonoBehaviour
+public class Interactable : MonoBehaviour
 {
     public string HintText;
 
@@ -12,5 +12,5 @@ public abstract class Interactable : MonoBehaviour
             throw new MissingComponentException("Interactables require a collider to find");
     }
 
-    public abstract bool TryInteract(PlayerController player, Hand hand);
+    public virtual bool TryInteract(PlayerController player, Hand hand) => false;
 }
