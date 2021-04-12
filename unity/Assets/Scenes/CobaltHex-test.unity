@@ -2424,7 +2424,7 @@ GameObject:
   - component: {fileID: 909247910}
   - component: {fileID: 909247909}
   m_Layer: 0
-  m_Name: Cube 4
+  m_Name: yellow cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3935,6 +3935,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 407960, guid: 26a51d653bd7111429b1afe89194a707, type: 3}
   m_PrefabInstance: {fileID: 1897553044}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1502650738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1502650739}
+  m_Layer: 0
+  m_Name: teleport output
+  m_TagString: Untagged
+  m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1502650739
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502650738}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.808, y: -0.198, z: 0.869}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1766535285}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1503482448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4935,7 +4965,7 @@ GameObject:
   - component: {fileID: 1746341476}
   - component: {fileID: 1746341475}
   m_Layer: 0
-  m_Name: Cube 2
+  m_Name: blue cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5118,7 +5148,7 @@ GameObject:
   - component: {fileID: 1766535282}
   - component: {fileID: 1766535286}
   m_Layer: 0
-  m_Name: scene trigger
+  m_Name: trigger test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5196,7 +5226,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -11.48, y: 2.5, z: 19.46}
   m_LocalScale: {x: 5, y: 5, z: 5}
-  m_Children: []
+  m_Children:
+  - {fileID: 1502650739}
   m_Father: {fileID: 0}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5209,10 +5240,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1766535281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0abf83dad6ac5248b68d657ad44d93a, type: 3}
+  m_Script: {fileID: 11500000, guid: 494b88c9809ff644c8f9b6e38971d572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: intro
+  FilterTag: Player
+  Teleportee: {fileID: 2101205170}
+  Destination: {fileID: 1502650739}
 --- !u!114 &1769714041 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1922198536644193898, guid: be85b129bf2763c4995e050d6187b221, type: 3}
@@ -5622,7 +5655,7 @@ GameObject:
   - component: {fileID: 1960546436}
   - component: {fileID: 1960546435}
   m_Layer: 0
-  m_Name: Cube 3
+  m_Name: green cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5908,7 +5941,7 @@ GameObject:
   - component: {fileID: 2101205172}
   - component: {fileID: 2101205171}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: red cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
