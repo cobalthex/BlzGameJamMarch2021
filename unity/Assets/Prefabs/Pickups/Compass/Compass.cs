@@ -24,6 +24,7 @@ public class Compass : MonoBehaviour
         transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, desired, transform.localEulerAngles.z);
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         EditorDrawUtils.DrawArrow(1f, transform.position, transform.position + North * 0.5f, transform.up, Color.red);
@@ -39,4 +40,5 @@ public class Compass : MonoBehaviour
         var text = $"{similarity}\n{cardinality}\n{lerp}\n{desired}";
         Handles.Label(transform.position + new Vector3(0.2f, 0.2f, 0), text);
     }
+#endif
 }

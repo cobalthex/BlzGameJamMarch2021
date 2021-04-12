@@ -47,7 +47,6 @@ public class Portal : MonoBehaviour
     Vector4 portalPlane;
 
     static int frame;
-    static int totalPortalsRenderedThisFrame;
 
     public Portal[] VisiblePortals { get; private set; }
     Stack<Subrender> subrenders = new Stack<Subrender>();
@@ -154,17 +153,14 @@ public class Portal : MonoBehaviour
         if (!CanSee(viewCamera, this, false))
             return;
 
+#if UNITY_EDITOR && DEBUG
         if (frame != Time.frameCount)
         {
             frame = Time.frameCount;
-            totalPortalsRenderedThisFrame = 0;
             PortalDebug.RenderedPortals.Clear();
         }
-        //if (portalsRenderedThisFrame > 15)
-        //    return;
-        //++portalsRenderedThisFrame;
-
         PortalDebug.RenderedPortals.Add(this);
+#endif
 
         // render the linked portals of all subrenders
         subrenders.Push(new Subrender
@@ -229,12 +225,11 @@ public class Portal : MonoBehaviour
     {
         if (Mirror)
         {
-            position += Vector3.Project(position - front.position, Up) * 2;
+            position -= Vector3.Project(position - front.position, Up) * 2;
             var reflected = front.position - Vector3.Reflect(position - front.position, Right);
             return reflected;
         }
         
-        //position -= Vector3.Project(position - front.position, Up);
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
     }
 
@@ -322,6 +317,7 @@ public class Portal : MonoBehaviour
         ignored.Remove(collider);
     }
 
+#if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         if (LinkedPortal != null)
@@ -348,4 +344,5 @@ public class Portal : MonoBehaviour
         EditorDrawUtils.DrawArrow(6, front.position, front.position + Up, Forward, Color.green); // up
         EditorDrawUtils.DrawArrow(3, front.position, front.position + Forward, Up, Color.blue); // forward
     }
+#endif
 }
