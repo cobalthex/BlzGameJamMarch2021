@@ -56,7 +56,8 @@ public class Picker : MonoBehaviour
 
         if (Pick != null)
         {
-            var hintText = string.IsNullOrEmpty(asInteractable?.HintText) ? "" : $"\n<size=15>{asInteractable.HintText}</size>";
+            var hintText = string.IsNullOrEmpty(asInteractable?.HintText) 
+                ? "" : $"\n<size=15>{(asInteractable.enabled ? asInteractable.HintText : "(disabled)")}</size>";
             var cta = new GUIContent(Pick.name + hintText);
             var size = CtaStyle.CalcSize(cta);
             var pos = new Vector2(centerX - size.x / 2, (Screen.height * .8f) - size.y);

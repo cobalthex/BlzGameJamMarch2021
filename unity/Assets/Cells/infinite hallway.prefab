@@ -1202,6 +1202,10 @@ PrefabInstance:
       propertyPath: MaxRecursion
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7168573390967752757, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
+      propertyPath: MaxRecursionTexture
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7247573108311870922, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_Layer
       value: 11
@@ -1520,6 +1524,10 @@ PrefabInstance:
     - target: {fileID: 7168573390967752757, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: MaxRecursion
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7168573390967752757, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
+      propertyPath: MaxRecursionTexture
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7247573108311870922, guid: 8949cc416b1badf4c9b822568f802847, type: 3}
       propertyPath: m_Layer

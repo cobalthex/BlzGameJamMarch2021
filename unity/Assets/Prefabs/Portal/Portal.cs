@@ -175,12 +175,10 @@ public class Portal : MonoBehaviour
         {
             var top = subrenders.Peek();
 
-            if (top.portal.LinkedPortal.VisiblePortals.Length == 0)
-                break;
-
+            int startingPortals = subrenders.Count;
             foreach (var visible in top.portal.LinkedPortal.VisiblePortals)
             {
-                if (visible.LinkedPortal == null)
+                if (visible.LinkedPortal == null || !visible.enabled)
                     continue; // disabled texture?
 
                 // portal might not be visible at some angles
@@ -196,6 +194,9 @@ public class Portal : MonoBehaviour
                     depth = i,
                 });
             }
+
+            if (subrenders.Count == startingPortals)
+                break;
         }
 
         SubRenderCount = subrenders.Count;
@@ -204,7 +205,8 @@ public class Portal : MonoBehaviour
             var top = subrenders.Pop();
             if (top.depth >= MaxRecursion)
             {
-                Graphics.Blit(MaxRecursionTexture, top.portal.surfaceTarget);
+                if (MaxRecursionTexture != null)
+                    Graphics.Blit(MaxRecursionTexture, top.portal.surfaceTarget);
                 continue;
             }
 
@@ -213,6 +215,7 @@ public class Portal : MonoBehaviour
             p.portalCamera.projectionMatrix = p.GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
             p.portalCamera.Render();
         }
+        Debug.Log($"{name} {portalCamera.transform.position} {portalCamera.transform.rotation}");
     }
 
     Matrix4x4 GetCameraClipMatrix(Camera viewCamera, Vector4 portalPlane)

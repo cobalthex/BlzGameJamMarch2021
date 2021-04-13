@@ -6,6 +6,10 @@ public class Equippable : Interactable
 
     public override bool TryInteract(PlayerController player, Hand hand)
     {
+        Outline outline;
+        if ((outline = GetComponent<Outline>()) != null)
+            outline.enabled = false;
+
         hand.EquippedItem = this;
         return true;
     }

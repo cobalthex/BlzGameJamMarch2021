@@ -57,5 +57,19 @@ public class Lock : Interactable
                     target.enabled = true;
                 break;
         }
+        StartCoroutine(AnimateLockCoroutine());
+    }
+
+    IEnumerator AnimateLockCoroutine()
+    {
+        var startingPosition = transform.localPosition;
+
+        for (float i = 0; i <= 2; i += 0.2f)
+        {
+            var amt = Mathf.PingPong(i, 1);
+            transform.localPosition = startingPosition + new Vector3(0, 0, -amt * 0.05f);
+            yield return null;
+        }
+        transform.localPosition = startingPosition;
     }
 }
