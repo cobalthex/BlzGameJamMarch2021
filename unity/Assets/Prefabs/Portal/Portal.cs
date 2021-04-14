@@ -215,7 +215,6 @@ public class Portal : MonoBehaviour
             p.portalCamera.projectionMatrix = p.GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
             p.portalCamera.Render();
         }
-        Debug.Log($"{name} {portalCamera.transform.position} {portalCamera.transform.rotation}");
     }
 
     Matrix4x4 GetCameraClipMatrix(Camera viewCamera, Vector4 portalPlane)
@@ -232,7 +231,7 @@ public class Portal : MonoBehaviour
             var reflected = front.position - Vector3.Reflect(position - front.position, Right);
             return reflected;
         }
-        
+
         return LinkedPortal.back.TransformPoint(front.InverseTransformPoint(position));
     }
 

@@ -2882,8 +2882,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 264289058}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.9546, y: -0.01, z: 18.2618}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.9546, y: -0.1, z: 18.2618}
   m_LocalScale: {x: 12.827136, y: 1, z: 16.415625}
   m_Children: []
   m_Father: {fileID: 272037806}
@@ -20248,6 +20248,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2343750767825779717, guid: f9b4fd078f0e4f843a245b3b906cca5b, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2343750767825779717, guid: f9b4fd078f0e4f843a245b3b906cca5b, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 5003505163049541050, guid: f9b4fd078f0e4f843a245b3b906cca5b, type: 3}
       propertyPath: m_RootOrder
       value: 23

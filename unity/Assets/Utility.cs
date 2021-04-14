@@ -40,7 +40,7 @@ public static class Utility
 
     public static void ActivateGameOver(GameOverType type)
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        var player = GameObject.Find("Player");
         player.GetComponent<PlayerController>().enabled = false;
         player.GetComponent<Picker>().enabled = false;
         Cursor.lockState = CursorLockMode.None;
