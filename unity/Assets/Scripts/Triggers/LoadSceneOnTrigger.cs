@@ -2,16 +2,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadScene : MonoBehaviour
+public class LoadSceneOnTrigger : MonoBehaviour
 {
-    public string sceneName;
+    public string SceneName;
 
     //private void Start()
     //{
-    //    if (string.IsNullOrEmpty(sceneName))
+    //    if (string.IsNullOrEmpty(SceneName))
     //    {
-    //        sceneName = SceneManager.GetActiveScene().name;
-    //        Debug.Log($"Setting {name}'s scene change to {sceneName}");
+    //        SceneName = SceneManager.GetActiveScene().name;
+    //        Debug.Log($"Setting {name}'s scene change to {SceneName}");
     //    }
     //}
 
@@ -26,7 +26,7 @@ public class LoadScene : MonoBehaviour
             return;
 
         if (other.tag.Contains("Player"))
-            StartCoroutine(Utility.LoadSceneCoroutine(sceneName));
+            StartCoroutine(Utility.LoadSceneCoroutine(SceneName));
 
         enabled = false;
     }

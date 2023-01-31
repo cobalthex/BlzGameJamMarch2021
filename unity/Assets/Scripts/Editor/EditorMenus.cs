@@ -52,6 +52,7 @@ public static class EditorMenus
         // note: this will only detect objects with a collider
         if (Physics.Raycast(position, down, out var hit))
         {
+            Undo.RecordObject(obj, "teleport object");
             obj.transform.position -= (position - hit.point);
         }
         else

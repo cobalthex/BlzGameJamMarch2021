@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +8,9 @@ using UnityEngine;
 public class PortalDebug : EditorWindow
 {
     public static readonly List<Portal> RenderedPortals = new List<Portal>();
+
+    Vector2 scrollPos;
+    bool showRecursion;
     
     [MenuItem("Tools/Debug portals")]
     public static void ShowWindow()
@@ -16,10 +20,7 @@ public class PortalDebug : EditorWindow
 
     void ListPortalsRecursive(Portal portal, int depth, int maxDepth)
     {
-        if (depth >= maxDepth)
-            return;
-
-        for (int i = 0; i < portal.VisiblePortals.Length; ++i)
+        for (int i = 0; i < Math.Min(maxDepth - depth, portal.VisiblePortals.Length); ++i)
         {
             var subPortal = portal.VisiblePortals[i];
             var indents = new string('┼', depth - 1); // ─
@@ -33,15 +34,24 @@ public class PortalDebug : EditorWindow
     {
         GUILayout.Label((RenderedPortals.Count == 0 ? "No " : "") + "Rendering Portals", EditorStyles.largeLabel);
 
-        for (int i = 0; i < RenderedPortals.Count; ++i)
-        {
-            var portal = RenderedPortals[i];
-            if (portal == null)
-                continue; // can happen if portal destroyed
+        showRecursion = GUILayout.Toggle(showRecursion, "List recursion");
 
-            var text = $"{(i + 1)}. {portal.name} ({portal.SubRenderCount})";
-            GUILayout.Label(text, EditorStyles.boldLabel);
-            ListPortalsRecursive(portal, 1, portal.MaxRecursion);
+        using (var scrollbox = new GUILayout.ScrollViewScope(scrollPos))
+        {
+            scrollPos = scrollbox.scrollPosition;
+
+            for (int i = 0; i < RenderedPortals.Count; ++i)
+            {
+                var portal = RenderedPortals[i];
+                if (portal == null)
+                    continue; // can happen if portal destroyed
+
+                var text = $"{(i + 1)}. {portal.name}; see: {portal.VisiblePortals.Length}; recurs:{portal.SubRenderCount - 1}";
+                GUILayout.Label(text, EditorStyles.boldLabel);
+
+                if (showRecursion)
+                    ListPortalsRecursive(portal, 1, portal.MaxRecursion);
+            }
         }
     }
 }

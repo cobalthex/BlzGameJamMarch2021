@@ -17,6 +17,13 @@ public class Chase : MonoBehaviour
     private float timePartial;
     private Animator animator;
 
+    double stunDurationSecondsRemaining;
+
+    public void Stun(float durationSec = 1f)
+    {
+        stunDurationSecondsRemaining = Math.Max(stunDurationSecondsRemaining, durationSec);
+    }
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -26,6 +33,11 @@ public class Chase : MonoBehaviour
         updateCountdown = updateSeconds;
         isPartial = false;
         timePartial = 0.0f;
+    }
+
+    private void Update()
+    {
+        animator.SetFloat("ForwardSpeed", Vector3.Dot(transform.forward, agent.velocity));
     }
 
     void FixedUpdate()
@@ -40,6 +52,13 @@ public class Chase : MonoBehaviour
             Debug.Log("Can now reach dest");
             isPartial = false;
             timePartial = 0.0f;
+        }
+
+        if (stunDurationSecondsRemaining > 0)
+        {
+            stunDurationSecondsRemaining = Math.Max(0, stunDurationSecondsRemaining - Time.fixedTimeAsDouble);
+            agent.ResetPath();
+            return;
         }
 
         if (isPartial)

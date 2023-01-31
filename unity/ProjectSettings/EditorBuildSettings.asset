@@ -6,27 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/final-ish/intro.unity
+    path: Assets/Scenes/final-ish/Intro.unity
     guid: 60d2af386337db04a89be55c05c33c68
   - enabled: 1
-    path: Assets/Scenes/final-ish/Bjorn - Level 1.unity
+    path: Assets/Scenes/final-ish/Story1.unity
     guid: 71a65df7ba24ab04184943eda4eda12d
   - enabled: 1
-    path: Assets/Scenes/final-ish/Bjorn - Level 2.unity
+    path: Assets/Scenes/final-ish/Story2.unity
     guid: af5f5455e5675714daa9398f0bec12a5
   - enabled: 1
-    path: Assets/Scenes/final-ish/Frank - Tut 1 - Portal Tutorial.unity
-    guid: 6207201ded267834eabc22bf7fae07c6
-  - enabled: 1
-    path: Assets/Scenes/final-ish/Frank - Tut 2 - Locked Door Tutorial.unity
+    path: Assets/Scenes/final-ish/Tutorial1.unity
     guid: e9a9ca2f7a36e6443ad71625f3b4b9f6
   - enabled: 1
-    path: Assets/Scenes/final-ish/Frank - Tut 3 - Locked Door w Enemy.unity
-    guid: fe51766cb5ed5a440bf71cc739e2d69e
+    path: Assets/Scenes/final-ish/Tutorial2.unity
+    guid: 117ce786ad11f504285d50a4ee103b39
   - enabled: 1
-    path: Assets/Scenes/final-ish/Winner Level.unity
+    path: Assets/Scenes/final-ish/Finale.unity
     guid: 75983b14b0c62694d851d5216a6235f4
-  - enabled: 0
-    path: Assets/Scenes/recursion test 2.unity
+  - enabled: 1
+    path: Assets/Scenes/ThinkingWithPortals.unity
     guid: 6c0451814eaa63844b7071ffe9535401
+  - enabled: 1
+    path: Assets/Scenes/Playground.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

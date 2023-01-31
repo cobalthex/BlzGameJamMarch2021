@@ -40,6 +40,11 @@ public class Lock : Interactable
         return false;
     }
 
+    public void ForceUseLock()
+    {
+        UseLock();
+    }
+
     void UseLock()
     {
         switch (UseAction)

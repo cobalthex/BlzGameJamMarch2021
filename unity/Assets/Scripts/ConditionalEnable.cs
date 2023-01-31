@@ -7,6 +7,12 @@ public enum ConditionRule
     Greater,
 }
 
+public enum ConditionCombination
+{
+    And,
+    Or,
+}
+
 [System.Serializable]
 public struct Condition
 {
@@ -31,7 +37,9 @@ public struct Condition
 [ExecuteAlways]
 public class ConditionalEnable : MonoBehaviour
 {
-    public Condition Condition;
+
+    public ConditionCombination Combination;
+    public Condition[] Conditions;
 
     bool lastState;
 
@@ -44,10 +52,22 @@ public class ConditionalEnable : MonoBehaviour
 
     void Update()
     {
-        if (Condition.State == null || Targets == null)
+        if (Conditions == null)
             return;
 
-        var state = Condition.Test();
+        int test = 0;
+        foreach (var cond in Conditions)
+        {
+            if (cond.State == null || Targets == null)
+                return;
+
+            test += cond.Test() ? 1 : 0;
+        }
+
+        bool state
+            = Combination == ConditionCombination.And
+            ? (test == Conditions.Length)
+            : (test > 0);
 
         if (state != lastState)
         {

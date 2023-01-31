@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Flashlight : Equippable
 {
-    Light light;
+    GameObject light;
 
     void Start()
     {
-        light = GetComponentInChildren<Light>();
+        light = transform.Find("light").gameObject;
     }
 
     public override void Use(PlayerController player)
     {
-        light.enabled ^= true;
+        light.SetActive(light.activeSelf ^ true);
     }
 }

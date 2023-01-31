@@ -5,11 +5,13 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
 using System.Linq;
+using System.Buffers;
+using System.Threading;
 
 public class Portal : MonoBehaviour
 {
     [Range(0, 10)]
-    public int MaxRecursion = 5; // this renders the scene this many times, so this can get expensive
+    public int MaxRecursion = 5; // this renders the scene this many times, so this can get expensive (this is not max depth)
 
     public enum EnteringBackBehavior
     {
@@ -28,13 +30,14 @@ public class Portal : MonoBehaviour
         public override string ToString() => $"{portal} {position} {rotation}";
     }
 
-
     public Portal LinkedPortal;
     public int MaxUseCount = -1;
 
     public EnteringBackBehavior EnteringFromBackBehavior;
 
     public Texture2D MaxRecursionTexture;
+
+    public bool Story1BathroomMirrorHack;
 
     int useCount = 0;
 
@@ -57,6 +60,15 @@ public class Portal : MonoBehaviour
     public Vector3 Right => front.transform.up;
 
     public bool Mirror;
+
+#if DEBUG
+    struct RenderedPlane
+    {
+        public Vector3 position;
+        public Vector3 frontNormal;
+    }
+    RenderedPlane[] lastRenderedPlanes;
+#endif // DEBUG
 
     void Awake()
     {
@@ -97,19 +109,19 @@ public class Portal : MonoBehaviour
             if (this == p)
                 return false;
 
-            return CanSee(portalCamera, p, false);
+            return CanSee(portalCamera, p, true);
         }).ToArray();
     }
 
     void OnDestroy()
     {
-        surfaceTarget.Release();
+        surfaceTarget?.Release();
         Destroy(surfaceTarget);
     }
 
     static bool CanSee(Camera from, Portal other, bool raycast = false)
     {
-        var diff = from.transform.position - other.front.position;
+        var diff = from.transform.position - other.transform.position;
 
         // is the other portal in front of the camera
         if (Vector3.Dot(diff, from.transform.forward) >= 0)
@@ -124,27 +136,41 @@ public class Portal : MonoBehaviour
             return false;
 
         if (raycast)
-        { 
+        {
             // todo
-            //if (!Physics.Raycast(front.position, (p.front.position - front.position).normalized, out var hit))
-            //    return false;
+            if (!Physics.Raycast(from.transform.position, (other.transform.position - from.transform.position).normalized, out var hit))
+                return false;
 
-            // hit.transform == p.transform
+            return Vector3.Distance(hit.transform.position, other.transform.position) < 0.001f;
         }
 
         return true;
     }
 
-    int lastRenderFrame = 0;
+    static readonly Color[] debugColors =
+    {
+        Color.white,
+        Color.red,
+        Color.blue,
+        Color.green,
+        Color.magenta,
+        Color.yellow,
+        Color.cyan,
+    };
+
+    //bool isVisible;
+    //private void OnBecameInvisible()
+    //{
+    //    isVisible = false;
+    //}
+    //private void OnBecameVisible()
+    //{
+    //    isVisible = true;
+    //}
 
     void OnPreRender()
     {
-        // no idea if this is good or bad
-        //if (lastRenderFrame == Time.frameCount)
-        //    return;
-        //lastRenderFrame = Time.frameCount;
-
-        if (LinkedPortal == null)
+        if (LinkedPortal == null/* || !isVisible*/)
             return;
         
         var viewCamera = Camera.main;
@@ -199,6 +225,10 @@ public class Portal : MonoBehaviour
                 break;
         }
 
+#if DEBUG
+        var renderedPlanes = ArrayPool<RenderedPlane>.Shared.Rent(subrenders.Count);
+#endif // DEBUG
+
         SubRenderCount = subrenders.Count;
         while (subrenders.Count > 0)
         {
@@ -211,10 +241,21 @@ public class Portal : MonoBehaviour
             }
 
             var p = top.portal;
+            //p.surface.material.SetColor("_Color", debugColors[top.depth % debugColors.Length]);
+
+            p.portalCamera.nearClipPlane = 0.01f;
+            p.portalCamera.farClipPlane = 1000000f;
             p.portalCamera.transform.SetPositionAndRotation(top.position, top.rotation);
             p.portalCamera.projectionMatrix = p.GetCameraClipMatrix(viewCamera, top.portal.LinkedPortal.portalPlane);
             p.portalCamera.Render();
+
+#if DEBUG
+            renderedPlanes[subrenders.Count] = new() { position = p.portalCamera.transform.position, frontNormal = p.portalCamera.transform.forward };
         }
+        lastRenderedPlanes = renderedPlanes;
+#else
+        }
+#endif // DEBUG
     }
 
     Matrix4x4 GetCameraClipMatrix(Camera viewCamera, Vector4 portalPlane)
@@ -239,8 +280,16 @@ public class Portal : MonoBehaviour
     {
         if (Mirror)
         {
+            // see https://stackoverflow.com/questions/32438252/efficient-way-to-apply-mirror-effect-on-quaternion-rotation
             rotation.y *= -1;
             rotation.z *= -1;
+
+            if (Story1BathroomMirrorHack) // for story1 bathroom mirror
+            {
+                var rot = Quaternion.AngleAxis(-90, front.transform.forward); // why???
+                return Quaternion.Inverse(front.transform.rotation * rot) * rotation;
+            }
+
             return rotation;
         }
 
@@ -335,16 +384,35 @@ public class Portal : MonoBehaviour
                 Handles.DrawAAPolyLine(1, front.position, visible.front.position);
         }
 
-        var pct = portalCamera.transform;
-        EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.black);
-
+        if (portalCamera != null)
+        {
+            var pct = portalCamera.transform;
+            EditorDrawUtils.DrawArrow(4, pct.position, pct.position + pct.forward, pct.up, Color.black);
+        }
     }
 
     void OnDrawGizmos()
     {
         front ??= transform.Find("front");
-        EditorDrawUtils.DrawArrow(6, front.position, front.position + Up, Forward, Color.green); // up
-        EditorDrawUtils.DrawArrow(3, front.position, front.position + Forward, Up, Color.blue); // forward
+        EditorDrawUtils.DrawArrow(6, front.position, front.position + Up, Forward, Color.green); // green = up
+        EditorDrawUtils.DrawArrow(3, front.position, front.position + Forward, Up, Color.blue); // blue = forward
+
+#if DEBUG
+        if (lastRenderedPlanes != null)
+        {
+            var color = new Color(1, 0.7f, 0);
+            var planes = lastRenderedPlanes;
+            foreach (var p in planes)
+            {
+                const float wingSize = 2;
+                var side = Vector3.Cross(Vector3.up, p.frontNormal);
+                Debug.DrawLine(p.position - side * wingSize, p.position + side * wingSize, color);
+                side = Vector3.Cross(Vector3.forward, p.frontNormal);
+                Debug.DrawLine(p.position - side * wingSize, p.position + side * wingSize, color);
+            }
+            ArrayPool<RenderedPlane>.Shared.Return(planes);
+        }
+#endif // DEBUG
     }
-#endif
+#endif // UNITY_EDITOR
 }

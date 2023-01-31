@@ -1,24 +1,27 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 
 public class PlayerController : MonoBehaviour
 {
     private float floorEpsilon = 0.03f;
 
-    public float LookSpeed = 30;
-    public float MoveSpeed = 1;
-    public float MaxMovementSpeed = 8;
-    public float JumpSeconds = 0.1f;
-    public float JumpStrength = 1;
+    float lookSpeed = 30;
+    float moveSpeed = 20;
+    float maxMovementSpeed = 8;
+    float jumpSeconds = 0.1f;
+    float jumpStrength = 0.6f;
+
     public bool InvertLookUp = false;
 
     float jumpEndTime = 0;
 
-    Transform feet;
+    Transform feetTxfm;
     Rigidbody physicsBody;
+    float distFromBodyToFeet;
 
-    Transform model;
+    Transform bodyTxfm;
     new Camera camera;
 
     Picker picker;
@@ -30,11 +33,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        feet = transform.Find("feet");
+        feetTxfm = transform.Find("feet");
         physicsBody = GetComponent<Rigidbody>();
-        model = transform.Find("body");
+        bodyTxfm = transform.Find("body");
         camera = GetComponentInChildren<Camera>();
         picker = GetComponent<Picker>();
+
+        distFromBodyToFeet = Vector3.Distance(bodyTxfm.position, feetTxfm.position);
 
         camera.nearClipPlane = 0.0001f; // editor only allows to 0.01
 
@@ -80,8 +85,10 @@ public class PlayerController : MonoBehaviour
         // not very reliable
         // should probably place collider at feet and test if colliding
         var down = Physics.gravity.normalized;
-        Physics.Raycast(new Ray(feet.position - (down * floorEpsilon), down), out var hit);
-        isGrounded = hit.distance <= floorEpsilon;
+        var groundTestRay = new Ray(bodyTxfm.position, down);
+        isGrounded = Physics.Raycast(groundTestRay, out var hit, distFromBodyToFeet + floorEpsilon);
+
+        Debug.DrawRay(groundTestRay.origin, groundTestRay.direction, new Color(255, 0, 0));
 
         // basic movement
         move += (Vector3.forward * Input.GetAxis("Vertical"));
@@ -89,28 +96,33 @@ public class PlayerController : MonoBehaviour
         move.Normalize();
 
         var forwardSpeed = Vector3.Dot(transform.rotation * move, physicsBody.velocity);
-        var moveSpeed = Mathf.Lerp(MoveSpeed, 0, forwardSpeed / MaxMovementSpeed);
+        var moveSpeed = Mathf.Lerp(this.moveSpeed, 0, forwardSpeed / maxMovementSpeed);
+
+#if DEBUG
+        if (Input.GetKey(KeyCode.LeftShift))
+            moveSpeed *= 3;
+#endif // DEBUG
 
         move *= moveSpeed * (isGrounded ? 1 : 0.4f);
 
         if (isGrounded)
         {
             if (Input.GetButtonDown("Jump"))
-                jumpEndTime = Time.time + JumpSeconds;
+                jumpEndTime = Time.time + jumpSeconds;
         }
         // fake ground friction? (vs lower air resistance)?
 
 #if DEBUG
         if (Input.GetKeyDown(KeyCode.G))
-            jumpEndTime = Time.time + JumpSeconds;
+            jumpEndTime = Time.time + jumpSeconds;
 #endif
 
         if (Time.time < jumpEndTime)
         {
-            move += transform.up /* * Input.GetAxis("Jump") */ * JumpStrength;
+            physicsBody.AddRelativeForce(transform.up * jumpStrength, ForceMode.Impulse);
         }
 
-        physicsBody.AddRelativeForce(move, ForceMode.Impulse);
+        physicsBody.AddRelativeForce(move, ForceMode.Force);
 
         #endregion
 
@@ -132,6 +144,37 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.C))
             RightHand.EquippedItem = null;
 
+#if DEBUG
+        if (Input.GetKeyDown(KeyCode.T) && picker?.Pick != null)
+        {
+            Interactable[] interactables;
+            if ((interactables = picker.Pick.GetComponents<Interactable>()).Length > 0)
+            {
+                foreach (var act in interactables)
+                {
+                    if (act is Lock lck)
+                        lck.ForceUseLock();
+                    else if (act is Switch sw)
+                        sw.State ^= SwitchState.On;
+                }
+            }
+        }
+#endif
+
+        #endregion
+
+        #region Secrets
+
+        if (Input.GetKey(KeyCode.M))
+        {
+            if (Input.GetKey(KeyCode.Keypad0))
+                SceneManager.LoadScene("Intro");
+            else if (Input.GetKey(KeyCode.Keypad1))
+                SceneManager.LoadScene("Playground");
+            else if (Input.GetKey(KeyCode.Keypad2))
+                SceneManager.LoadScene("ThinkingWithPortals");
+        }
+
         #endregion
     }
 
@@ -140,7 +183,7 @@ public class PlayerController : MonoBehaviour
         if (Cursor.lockState == CursorLockMode.None)
             return;
 
-        var lookSpeed = LookSpeed * Time.unscaledDeltaTime;
+        var lookSpeed = this.lookSpeed * Time.unscaledDeltaTime;
 
         var q = camera.transform.localRotation; // transform.localEulerAngles are absoluted so calc manually
 
@@ -208,7 +251,7 @@ public class PlayerController : MonoBehaviour
     void OnGUI()
     {
         GUI.color = Color.blue;
-        //GUI.Label(new Rect(10, 100, 200, 20), $"Grounded: {isGrounded}");
+        GUI.Label(new Rect(10, 100, 200, 20), $"Grounded: {isGrounded}");
     }
 #endif
 

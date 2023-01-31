@@ -6,17 +6,18 @@ public class TriggerState : MonoBehaviour
 
     public AnalogState LinkedState;
     public float DesiredValue = 1;
-    
+
+    public bool Continuous;
     public bool DisableAfterUse;
 
     bool didUse = false;
 
     private void OnTriggerStay(Collider other)
     {
-        if (didUse || !enabled)
+        if ((!Continuous && didUse) || !enabled)
             return;
 
-        if (!other.CompareTag(TagFilter))
+        if (TagFilter != null && !other.CompareTag(TagFilter))
             return;
 
         didUse = true;
@@ -30,7 +31,7 @@ public class TriggerState : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (!enabled ||
-            !other.CompareTag(TagFilter))
+            (TagFilter != null && !other.CompareTag(TagFilter)))
             return;
 
         didUse = false;
